@@ -1,0 +1,3 @@
+org.eclipse.help/debug = true
+org.eclipse.help/debug/context = true
+org/debug = true
