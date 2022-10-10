@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>unitboot-demo1</artifactId>
+    <parent>
+        <groupId>com.union.unitboot</groupId>
+        <artifactId>unitboot-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.union.unitboot</groupId>
+            <artifactId>unitboot-base</artifactId>
+            <version>${unitboot.version}</version>
+        </dependency>
+        <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-swagger2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-core</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-spring-web</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+        <groupId>io.springfox</groupId>
+        <artifactId>springfox-spi</artifactId>
+        <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.1.RELEASE</version>
+                <configuration>
+                    <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <excludeArtifactIds>spring-plugin-core,spring-plugin-metadata,springfox-core,springfox-schema,springfox-spi,springfox-spring-web,springfox-spring-webmvc,springfox-swagger-ui,spring-boot,spring-cloud-context,spring-context,spring-core,spring-expression,spring-security-crypto,spring-web,spring-webmvc,spring-boot-starter,spring-aop,spring-beans,spring-boot-autoconfigure,spring-boot-starter-json,spring-boot-starter-logging,spring-boot-starter-tomcat,spring-boot-starter-validation,spring-boot-starter-web,spring-jcl</excludeArtifactIds>
+                            <excludeGroupIds>ch.qos.logback,org.hibernate.validator,com.fasterxml.jackson.core,com.fasterxml.jackson,org.apache.tomcat.embed,com.union.unitboot</excludeGroupIds>
+                            <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.0</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>${project.basedir}/src/main/resources/test.groovy</source>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--  打包时,添加信息  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <copyright>unitboot-demo-1.0.0</copyright>
+                        </manifestEntries>
+                    </archive>
+                    <!--  指定打包的jar包输出路径  -->
+                    <outputDirectory>f:\soft\hora\unitor3.0_linux\unit\spring</outputDirectory>
+                    <!-- 不打入jar包的文件类型或者路径  -->
+                    <excludes>
+                        <exclude>*.project</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
