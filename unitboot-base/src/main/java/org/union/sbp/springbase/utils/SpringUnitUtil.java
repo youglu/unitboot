@@ -4,9 +4,11 @@ import org.eclipse.osgi.internal.loader.BundleLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
 import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.context.ApplicationContext;
 import org.union.sbp.springbase.constinfo.SpringUnit;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -73,5 +75,20 @@ public class SpringUnitUtil {
             e.printStackTrace();
         }
         return null;
+    }
+    public static Bundle getBundleByApplicationContext(final ApplicationContext unitApplicationContext) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        if(null == unitApplicationContext){
+            return null;
+        }
+        ClassLoader unitClassLoader = unitApplicationContext.getClassLoader();
+        if(!unitClassLoader.getClass().getName().equals("org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader")){
+            return null;
+        }
+        Method getBundle = unitClassLoader.getClass().getDeclaredMethod("getBundle");
+        Bundle unitBundle = (Bundle) getBundle.invoke(unitClassLoader);
+        if(null == unitBundle){
+            throw new RuntimeException("无法从子单元ApplicationContext获得有效的单元");
+        }
+        return unitBundle;
     }
 }

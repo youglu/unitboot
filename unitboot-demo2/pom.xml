@@ -131,7 +131,7 @@
                         </manifestEntries>
                     </archive>
                     <!--  指定打包的jar包输出路径  -->
-                    <outputDirectory>f:\soft\hora\unitor3.0_linux\unit\spring</outputDirectory>
+                    <outputDirectory>F:\soft\hora\unitboot-1.0\unit\spring</outputDirectory>
                     <!-- 不打入jar包的文件类型或者路径  -->
                     <excludes>
                         <exclude>*.project</exclude>

@@ -11,9 +11,7 @@ public class UnitLauncher {
     public static void main(String[] args) throws Exception {
         args = new String[]{"-console","-dev","-debug"};
         String configdir = "D:\\soft\\hora\\unitor3.0_linux\\bin\\configuration";
-        configdir = "F:\\soft\\hora\\unitor3.0_linux\\bin\\uni3.8";
-        // configdir = "F:\\soft\\hora\\unitor3.0_linux\\bin\\cms";
-        configdir = "F:\\soft\\hora\\unitor3.0_linux\\bin\\uni4";
+        configdir = "F:\\soft\\hora\\unitboot-1.0\\bin\\configuration";
 
         System.setProperty("osgi.configuration.area",configdir);
         // System.setProperty("osgi.instance.area",configdir);

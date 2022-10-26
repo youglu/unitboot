@@ -2,22 +2,29 @@ package org.union.sbp.springbase.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.web.WebApplicationInitializer;
+import org.springframework.web.context.ContextLoader;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 @Component
-public class SpringContextUtil implements ApplicationContextAware {
+public class SpringContextUtil implements ApplicationContextAware, WebApplicationInitializer {
     /**
      * 上下文对象实例
      */
     private static ApplicationContext applicationContext;
+    private static ServletContext servletContext;
   
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
-  
+
     /**
      * 获取applicationContext
      * @return
@@ -54,5 +61,16 @@ public class SpringContextUtil implements ApplicationContextAware {
      */
     public static <T> T getBean(String name,Class<T> clazz){
         return getApplicationContext().getBean(name, clazz);
+    }
+
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        this.servletContext = servletContext;
+    }
+    public static ServletContext getServletContext() {
+        if(null == servletContext && null != applicationContext){
+            servletContext = ((AnnotationConfigServletWebServerApplicationContext)applicationContext).getServletContext();
+        }
+        return servletContext;
     }
 }

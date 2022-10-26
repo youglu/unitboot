@@ -31,7 +31,7 @@ public class Knife4jConfiguration {
                 .groupName("2.X版本")
                 .select()
                 //这里指定Controller扫描包路径
-                .apis(RequestHandlerSelectors.basePackage("org.union.sbp.springdemo"))
+                .apis(RequestHandlerSelectors.basePackage("org.union.sbp.springbase"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;

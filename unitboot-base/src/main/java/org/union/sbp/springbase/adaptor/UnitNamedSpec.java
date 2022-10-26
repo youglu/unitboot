@@ -1,4 +1,4 @@
-package org.union.sbp.springbase.config;
+package org.union.sbp.springbase.adaptor;
 
 import org.springframework.cloud.context.named.NamedContextFactory;
 

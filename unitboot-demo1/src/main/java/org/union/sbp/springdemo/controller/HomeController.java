@@ -5,16 +5,24 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import org.union.sbp.springdemo.service.DemoService;
 
 @Api(tags = "SpringBoot单元Demo1")
 @RestController
-@RequestMapping(path = "/demo1")
+@RequestMapping(path = HomeController.HomeController_PATH)
 public class HomeController {
+    public static final String HomeController_PATH = "/demo1";//${unitName:}
+    @Autowired
+    private Environment environment;
 
     @Autowired
     private DemoService demoService;
+
+    @Autowired
+    private DataSourceProperties dataSourceProperties;
 
     public HomeController() {
         System.out.println("实例化HomeController,demoService");
@@ -24,7 +32,12 @@ public class HomeController {
     @ApiImplicitParam(name = "name", value = "姓名", required = true)
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String home(@RequestParam(value = "name") String name) {
-        return "Hello，Spring Boot:" + demoService;
+        return "Hello，Spring Boot:" + demoService
+                +",uname="+environment.getProperty("uname")
+                +",unitboot:"+environment.getProperty("unitboot")
+                +",unitName:"+environment.getProperty("unitName")
+                +",env:"+environment
+                +",dataSourceProperties:"+dataSourceProperties.getUrl();
     }
 
     @ApiImplicitParams({

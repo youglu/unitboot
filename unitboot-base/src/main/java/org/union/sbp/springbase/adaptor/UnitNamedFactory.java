@@ -1,14 +1,10 @@
-package org.union.sbp.springbase.config;
+package org.union.sbp.springbase.adaptor;
 
-import org.springframework.boot.autoconfigure.context.PropertyPlaceholderAutoConfiguration;
 import org.springframework.cloud.context.named.NamedContextFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.MapPropertySource;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 用于根据单元名称创建子context。
@@ -21,14 +17,15 @@ public class UnitNamedFactory extends NamedContextFactory<UnitNamedSpec> {
      */
     private Map<String, AnnotationConfigApplicationContext> contexts = null;
 
+
     /**
      * 构造器.
      * @param defaultConfigType
-     * @param contextNam
+     * @param propertySourceName
      * @param propertyName
      */
-    public UnitNamedFactory(Class<?> defaultConfigType, String contextNam, String propertyName) {
-        super(defaultConfigType,contextNam,propertyName);
+    public UnitNamedFactory(Class<?> defaultConfigType, String propertySourceName, String propertyName) {
+        super(defaultConfigType,propertySourceName,propertyName);
         try {
             Field contextsField = NamedContextFactory.class.getDeclaredField("contexts");
             contextsField.setAccessible(true);

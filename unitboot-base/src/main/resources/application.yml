@@ -1,6 +1,2 @@
 server:
   port: 8081
-springfox:
-  documentation:
-    swagger-ui:
-      base-url: ""

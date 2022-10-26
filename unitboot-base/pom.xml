@@ -16,21 +16,22 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-context</artifactId>
-            <version>2.2.2.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--swagger2-->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-        <!-- swagger2-UI-->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId> 
         </dependency>
         <dependency>
             <groupId>com.github.xiaoymin</groupId>
@@ -44,11 +45,6 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <version>4.3.1</version>
-        </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -118,7 +114,7 @@
                         </manifestEntries>
                     </archive>
                     <!--  指定打包的jar包输出路径  -->
-                    <outputDirectory>f:\soft\hora\unitor3.0_linux\unit\spring</outputDirectory>
+                    <outputDirectory>F:\soft\hora\unitboot-1.0\unit\spring</outputDirectory>
                     <!-- 不打入jar包的文件类型或者路径  -->
                     <excludes>
                         <exclude>*.project</exclude>
@@ -139,6 +135,7 @@
                         </goals>
                         <configuration>
                             <excludeArtifactIds>org.eclipse.osgi</excludeArtifactIds>
+                            <excludeGroupIds>com.union.unitboot</excludeGroupIds>
                             <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
                         </configuration>
                     </execution>

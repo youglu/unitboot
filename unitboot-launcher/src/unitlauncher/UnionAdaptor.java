@@ -1,5 +1,6 @@
 package unitlauncher;
 
+import org.osgi.framework.BundleContext;
 import unitlauncher.adaptor.AllAccessHook;
 
 import java.lang.reflect.Field;
@@ -27,7 +28,7 @@ public class UnionAdaptor extends org.eclipse.osgi.baseadaptor.BaseAdaptor{
             final Field readonlyField = getHookRegistry().getClass().getDeclaredField("readonly");
             readonlyField.setAccessible(true);
             readonlyField.setBoolean(getHookRegistry(), false);
-            getHookRegistry().addClassLoaderDelegateHook(new AllAccessHook());
+            getHookRegistry().addClassLoaderDelegateHook(new AllAccessHook(this));
             readonlyField.setBoolean(getHookRegistry(), true);
             readonlyField.setAccessible(false);
         }catch (Exception e){

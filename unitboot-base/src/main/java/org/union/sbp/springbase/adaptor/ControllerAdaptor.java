@@ -8,6 +8,7 @@ import org.union.sbp.springbase.utils.SpringSwaggerUtil;
 import org.union.sbp.springbase.utils.SpringContollerUtil;
 import org.union.sbp.springbase.utils.UnitLogger;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 /**
@@ -42,7 +43,11 @@ public class ControllerAdaptor {
         UnitLogger.logUserTimes(log,startTime,"完成controller适配");
         startTime = System.currentTimeMillis();
         // 添加controller到主context后，重新扫描下swagger
-        SwaggerAdaptor.addUnitSwagger(unitApplicationContext);
+        try {
+            SwaggerAdaptor.addUnitSwagger(unitApplicationContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         UnitLogger.logUserTimes(log,startTime,"完成swagger适配");
     }
     /**
@@ -51,22 +56,6 @@ public class ControllerAdaptor {
      * @throws Exception
      */
     public static void removeUnitController(final AnnotationConfigApplicationContext unitApplicationContext){
-        Map<String, Object> controllerMap = unitApplicationContext.getBeansWithAnnotation(RestController.class);
-        System.out.println(controllerMap);
-        if (null == controllerMap || controllerMap.isEmpty()) {
-            return;
-        }
-        for(Map.Entry<String,Object> entry:controllerMap.entrySet()){
-            if(entry.getValue().getClass().getName().startsWith(SWAGGER_CONTROLLER_PACKAGE_PREFIX)){
-                continue;
-            }
-            try {
-                SpringContollerUtil.unRegisterControllerWithBean(entry.getValue());
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            }
-        }
-        // 停止单元后需要将子单元的swagger信息从主单元中移除.
-        SwaggerAdaptor.removeUnitSwagger(unitApplicationContext);
+
     }
 }

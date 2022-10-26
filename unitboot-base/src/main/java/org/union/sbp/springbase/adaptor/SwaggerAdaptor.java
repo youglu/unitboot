@@ -1,13 +1,16 @@
 package org.union.sbp.springbase.adaptor;
 
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
+import org.union.sbp.springbase.adaptor.web.swagger.UnitDocumentation;
 import org.union.sbp.springbase.utils.SpringContextUtil;
-import org.union.sbp.springbase.utils.SpringSwaggerUtil;
+import org.union.sbp.springbase.utils.SpringUnitUtil;
 import springfox.documentation.service.Documentation;
 import springfox.documentation.spring.web.plugins.DocumentationPluginsBootstrapper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,7 +24,7 @@ public class SwaggerAdaptor {
     /**
      * 将子单元的swagger增加到主context documentcache中.
      */
-    public static void addUnitSwagger(ApplicationContext unitApplicationContext){
+    public static void addUnitSwagger(ApplicationContext unitApplicationContext) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         DocumentationPluginsBootstrapper unitDocumentationPluginsBootstrapper = unitApplicationContext.getBean(DocumentationPluginsBootstrapper.class);
         DocumentationPluginsBootstrapper rootDocumentationPluginsBootstrapper = SpringContextUtil.getApplicationContext().getBean(DocumentationPluginsBootstrapper.class);
 
@@ -39,7 +42,11 @@ public class SwaggerAdaptor {
         unitDocumentationPluginsBootstrapper.stop();
         unitDocumentationPluginsBootstrapper.start();
 
-        documentationMap.putAll(unitDocumentationPluginsBootstrapper.getScanned().all());
+        final Bundle bundle = SpringUnitUtil.getBundleByApplicationContext(unitApplicationContext);
+        final String unitContextName = bundle.getSymbolicName();
+        unitDocumentationPluginsBootstrapper.getScanned().all().forEach((key, documentation) -> {
+            documentationMap.put(key,new UnitDocumentation(documentation,unitContextName));
+        });
         // 将子单元的swagger Document加到主单元中的document缓存中
         documentationMap.forEach((key,docu)->{
             rootDocumentationPluginsBootstrapper.getScanned().addDocumentation(docu);

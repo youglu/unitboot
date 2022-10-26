@@ -78,28 +78,16 @@ public class SpringContollerUtil {
             e.printStackTrace();
         }
     }
-
     /**
-     * 指定controller class动态添加到context,只能添加与主context与样的classloader的class。
-     * @param controllerClass
-     * @throws Exception
+     * 将指定controller bean注册到主context。
+     * @param controller
      */
-    public static void registerControllerWithClass(final Class controllerClass) throws Exception {
-        ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
-        //获取BeanFactory
-        DefaultListableBeanFactory defaultListableBeanFactory = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
-        //创建bean信息.
-        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(controllerClass);
-        //动态注册bean.
-        defaultListableBeanFactory.registerBeanDefinition(controllerClass.getSimpleName(), beanDefinitionBuilder.getBeanDefinition());
-        final RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
-        //注册Controller
-        Method method = RequestMappingHandlerMapping.class.
-                getSuperclass().getSuperclass().
-                getDeclaredMethod("detectHandlerMethods", Object.class);
-        //将private改为可使用
-        method.setAccessible(true);
-        Object controller = applicationContext.getBean(controllerClass);
-        method.invoke(requestMappingHandlerMapping, controller);
+    public static void registerFilterWithBean(final Object controller){
+        final ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+        try {
+            AnnotationConfigApplicationContext unitApplicationContext = (AnnotationConfigApplicationContext)applicationContext;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

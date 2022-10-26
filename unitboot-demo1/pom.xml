@@ -79,25 +79,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeArtifactIds>spring-plugin-core,spring-plugin-metadata,springfox-core,springfox-schema,springfox-spi,springfox-spring-web,springfox-spring-webmvc,springfox-swagger-ui,spring-boot,spring-cloud-context,spring-context,spring-core,spring-expression,spring-security-crypto,spring-web,spring-webmvc,spring-boot-starter,spring-aop,spring-beans,spring-boot-autoconfigure,spring-boot-starter-json,spring-boot-starter-logging,spring-boot-starter-tomcat,spring-boot-starter-validation,spring-boot-starter-web,spring-jcl</excludeArtifactIds>
-                            <excludeGroupIds>ch.qos.logback,org.hibernate.validator,com.fasterxml.jackson.core,com.fasterxml.jackson,org.apache.tomcat.embed,com.union.unitboot</excludeGroupIds>
-                            <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>groovy-maven-plugin</artifactId>
                 <version>2.0</version>
@@ -132,7 +113,7 @@
                         </manifestEntries>
                     </archive>
                     <!--  指定打包的jar包输出路径  -->
-                    <outputDirectory>f:\soft\hora\unitor3.0_linux\unit\spring</outputDirectory>
+                    <outputDirectory>F:\soft\hora\unitboot-1.0\unit\spring</outputDirectory>
                     <!-- 不打入jar包的文件类型或者路径  -->
                     <excludes>
                         <exclude>*.project</exclude>
