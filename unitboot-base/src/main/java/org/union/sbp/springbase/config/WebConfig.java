@@ -13,18 +13,29 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.union.sbp.springbase.adaptor.web.RootDispatcherServlet;
 import org.union.sbp.springbase.adaptor.web.UnitDispatcherServlet;
 
+/**
+ * 主context的web配置
+ */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    /**
+     * 设置特定路径的资源配置.
+     * @param registry
+     */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //registry.addResourceHandler("/**"). addResourceLocations("classpath:/static/").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
     }
 
-    @Bean(
-            name = {"dispatcherServlet"}
-    )
+    /**
+     * 指定DispatcherServlet bean,如果是单元在springboot运行则不需要，在unitboot环境下运行则需要.
+     * @param httpProperties
+     * @param webMvcProperties
+     * @return
+     */
+    @Bean(name = {"dispatcherServlet"})
     public DispatcherServlet dispatcherServlet(HttpProperties httpProperties, WebMvcProperties webMvcProperties) {
         DispatcherServlet dispatcherServlet = new RootDispatcherServlet();
         dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());

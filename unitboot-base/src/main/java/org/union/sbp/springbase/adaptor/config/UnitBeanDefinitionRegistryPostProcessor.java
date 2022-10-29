@@ -28,17 +28,33 @@ import java.util.Map;
  * @since jdk1.8
  */
 public class UnitBeanDefinitionRegistryPostProcessor extends ConfigurationClassPostProcessor implements ApplicationContextAware {
+    /**
+     * 子context的环境变量
+     */
     private Environment environment;
+
+    /**
+     * 构造器
+     */
     public UnitBeanDefinitionRegistryPostProcessor(){
         super();
     }
 
+    /**
+     * 重写设置环境变量方法.
+     * @param environment
+     */
     @Override
     public void setEnvironment(Environment environment) {
         super.setEnvironment(environment);
         this.environment = environment;
     }
 
+    /**
+     * 重写设置ApplicationContext方法，此方法在setEnvironment之后调用.
+     * @param applicationContext
+     * @throws BeansException
+     */
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         AnnotationConfigApplicationContext unitApplicationContext = (AnnotationConfigApplicationContext)applicationContext;
@@ -87,6 +103,15 @@ public class UnitBeanDefinitionRegistryPostProcessor extends ConfigurationClassP
             throw new RuntimeException("添加子单元标识属性到子环境变量中发生异常",e);
         }
     }
+
+    /**
+     * 添加springboot单元特定的标识到环境变量.
+     * @param unitApplicationContext
+     * @param unitBundle 单元bundle
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     private void addUnitBootFlagProperty(ApplicationContext unitApplicationContext,final Bundle unitBundle) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if(null == environment){
             environment = unitApplicationContext.getEnvironment();

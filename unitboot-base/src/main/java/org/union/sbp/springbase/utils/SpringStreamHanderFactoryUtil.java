@@ -7,6 +7,8 @@ import java.net.URLStreamHandlerFactory;
 
 /**
  * 更换URLStreamHandlerFactory工具类.
+ * @author youg
+ * @since JDK1.8
  */
 public class SpringStreamHanderFactoryUtil {
 

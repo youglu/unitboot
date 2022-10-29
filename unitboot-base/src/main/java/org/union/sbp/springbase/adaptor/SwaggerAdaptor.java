@@ -42,6 +42,8 @@ public class SwaggerAdaptor {
         unitDocumentationPluginsBootstrapper.stop();
         unitDocumentationPluginsBootstrapper.start();
 
+        // 将默认的swagger缓存中的documentation换成unitdocumentation，用于向url增加子单元前缀功能，解决
+        // 整合后swagger调试不可用问题.
         final Bundle bundle = SpringUnitUtil.getBundleByApplicationContext(unitApplicationContext);
         final String unitContextName = bundle.getSymbolicName();
         unitDocumentationPluginsBootstrapper.getScanned().all().forEach((key, documentation) -> {

@@ -27,6 +27,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: com.union.unitboot:unitboot-base:1.0.0" level="project" />
+    <orderEntry type="module" module-name="unitboot-base" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-context:2.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE" level="project" />

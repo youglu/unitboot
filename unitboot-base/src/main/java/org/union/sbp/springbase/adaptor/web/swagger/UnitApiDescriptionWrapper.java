@@ -23,6 +23,13 @@ public class UnitApiDescriptionWrapper extends ApiDescription {
             this.unitName = "/"+this.unitName;
         }
     }
+
+    /**
+     * 重写获得path,增加/unitName作为前缀，此前缀为server.servlet.contextPath配置，但在
+     * 整合中没法获得，导至需要这样处理.
+     * @return
+     */
+    @Override
     public String getPath() {
         if(!StringUtils.isEmpty(unitName)){
             return unitName+super.getPath();

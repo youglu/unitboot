@@ -1,6 +1,5 @@
 package org.union.sbp.springbase.adaptor.web;
 
-import org.apache.catalina.mapper.MappingData;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +11,9 @@ import javax.servlet.http.HttpServletRequestWrapper;
  * @since JDK1.8
  */
 public class UnitRequestWrapper extends HttpServletRequestWrapper {
+    /**
+     * 单元名称
+     */
     private String unitName;
     public UnitRequestWrapper(HttpServletRequest request) {
         super(request);

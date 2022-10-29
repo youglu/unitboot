@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * spring子单元controller适配器.
+ * spring子单元filter适配器,用于将子单元的filter注入到主context的web容器中.
  * @author youg
  * @since jdk1.8
  */
@@ -92,7 +92,7 @@ public class FilterAdaptor {
         if (null == filterBeanMap || filterBeanMap.isEmpty()) {
             return;
         }
-        StandardContext standardContext = getStandardContextFromRootApplicationContext();
+        final StandardContext standardContext = getStandardContextFromRootApplicationContext();
         // 这里会存在并发问题，如果锁住，在线运行会暂停.
         for(Map.Entry<String,Filter> entry:filterBeanMap.entrySet()){
             String filterName = entry.getValue().getClass().getSimpleName();
@@ -128,16 +128,16 @@ public class FilterAdaptor {
      * @return
      */
     private static StandardContext getStandardContextFromRootApplicationContext(){
-        ServletContext servletContext = SpringContextUtil.getServletContext();
+        final ServletContext servletContext = SpringContextUtil.getServletContext();
         // 更改context状态
-        ApplicationContextFacade applicationContextFacade = ((ApplicationContextFacade)servletContext);
+        final ApplicationContextFacade applicationContextFacade = ((ApplicationContextFacade)servletContext);
         Field appContextField = ReflectionUtils.findField(ApplicationContextFacade.class,"context");
         appContextField.setAccessible(true);
 
-        ApplicationContext applicationContext = (ApplicationContext) ReflectionUtils.getField(appContextField,applicationContextFacade);
-        Field contextField = ReflectionUtils.findField(ApplicationContext.class,"context");
+        final ApplicationContext applicationContext = (ApplicationContext) ReflectionUtils.getField(appContextField,applicationContextFacade);
+        final Field contextField = ReflectionUtils.findField(ApplicationContext.class,"context");
         contextField.setAccessible(true);
-        StandardContext standardContext = (StandardContext)ReflectionUtils.getField(contextField,applicationContext);
+        final StandardContext standardContext = (StandardContext)ReflectionUtils.getField(contextField,applicationContext);
         return standardContext;
     }
 }

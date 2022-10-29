@@ -4,3 +4,5 @@ springfox:
       base-url: /
 server:
   port: 9090
+  servlet:
+    contextPath: /app2

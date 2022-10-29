@@ -10,7 +10,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class SpringDemo1Activator implements BundleActivator {
 
 	public void start(BundleContext context) throws Exception {
-		System.out.println(Class.forName("javax.servlet.Servlet"));
 		System.out.println("spring demo初始化完毕");
 	}
 

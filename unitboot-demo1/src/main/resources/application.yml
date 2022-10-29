@@ -4,11 +4,16 @@ springfox:
       base-url: /
 uname: bbb
 spring:
+  h2:
+    console:
+      enabled: true
   datasource:
-    driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/ygmd?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useSSL=false&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true
-    username: root
-    password: land123
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
+    username: sa
+    password: sa
     druid:
       initialSize: 5
       minIdle: 5
@@ -32,3 +37,9 @@ spring:
 server:
   servlet:
     context-path: /app1
+#mybatis配置
+mybatis:
+  type-aliases-package: org.union.sbp.springdemo.model.po
+  mapper-locations: classpath:/mybatis-mappers/*.xml
+  configuration:
+    mapUnderscoreToCamelCase: true

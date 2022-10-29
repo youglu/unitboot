@@ -1,6 +1,5 @@
 package org.union.sbp.springbase.adaptor.config;
 
-import org.apache.catalina.core.StandardContext;
 import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.annotation.Bean;
@@ -8,16 +7,27 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 import org.union.sbp.springbase.adaptor.web.UnitDispatcherServlet;
+import org.union.sbp.springbase.adaptor.web.swagger.UnitRequestHandlerProvider;
 import springfox.documentation.spi.service.RequestHandlerProvider;
 
+/**
+ * spring子单元web配置.
+ * @author youg
+ * @since JDK1.8
+ */
 public class UnitWebConfig implements WebMvcConfigurer {
 
     public UnitWebConfig(){
         System.out.println("初始化UnitWebConfig");
     }
-    @Bean(
-            name = {"dispatcherServlet"}
-    )
+
+    /**
+     * 子单元的DispatcherServlet bean，用于提供在更新单元后的DispatcherServlet刷新.
+     * @param httpProperties
+     * @param webMvcProperties
+     * @return
+     */
+    @Bean(name = {"dispatcherServlet"})
     public DispatcherServlet dispatcherServlet(HttpProperties httpProperties, WebMvcProperties webMvcProperties) {
         DispatcherServlet dispatcherServlet = new UnitDispatcherServlet();
         dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());
@@ -40,7 +50,7 @@ public class UnitWebConfig implements WebMvcConfigurer {
     }
 
     /**
-     * 为swagger提供单元的RequestHandlerProvider
+     * 为swagger提供单元的RequestHandlerProvider,用于子单元将子单元中的controller信息初始化到swagger.
      * @param requestMappingHandlerMapping
      * @return
      */

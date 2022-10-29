@@ -10,6 +10,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.*;
 import org.union.sbp.springdemo.service.DemoService;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Api(tags = "SpringBoot单元Demo1")
 @RestController
 @RequestMapping(path = HomeController.HomeController_PATH)
@@ -47,7 +50,8 @@ public class HomeController {
     @ApiOperation(value = "获得name列表")
     @RequestMapping(value = "/names", method = RequestMethod.GET)
     public String names(@RequestParam(value = "name") String name, @RequestParam(value = "version") int version) {
-        return demoService.findNames();
+        Map params = new HashMap();
+        return demoService.findNames(params);
     }
 
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "标识", required = true),
@@ -55,6 +59,7 @@ public class HomeController {
     @ApiOperation(value = "服务名")
     @RequestMapping(value = "/serviceName", method = RequestMethod.GET)
     public String serviceName(@RequestParam(value = "name") String name, @RequestParam(value = "version") int version) {
-        return demoService.findNames();
+        Map params = new HashMap();
+        return demoService.findNames(params);
     }
 }

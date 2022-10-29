@@ -12,14 +12,28 @@ import org.springframework.web.context.ContextLoader;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+/**
+ *  主单元的spring ApplicationContext 工具类，同时具备设置ServletContext对象的方法。
+ * @author youg
+ * @since JDK1.8
+ *
+ */
 @Component
 public class SpringContextUtil implements ApplicationContextAware, WebApplicationInitializer {
     /**
-     * 上下文对象实例
+     * 上下文对象实例.
      */
     private static ApplicationContext applicationContext;
+    /**
+     * ServletContext对象.
+     */
     private static ServletContext servletContext;
-  
+
+    /**
+     * 设置ApplicationContext
+     * @param applicationContext
+     * @throws BeansException
+     */
     @Autowired
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
@@ -63,10 +77,20 @@ public class SpringContextUtil implements ApplicationContextAware, WebApplicatio
         return getApplicationContext().getBean(name, clazz);
     }
 
+    /**
+     * web启动时发出的事件用于设置ServletContext
+     * @param servletContext
+     * @throws ServletException
+     */
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         this.servletContext = servletContext;
     }
+
+    /**
+     * 获得ServletContext
+     * @return ServletContext
+     */
     public static ServletContext getServletContext() {
         if(null == servletContext && null != applicationContext){
             servletContext = ((AnnotationConfigServletWebServerApplicationContext)applicationContext).getServletContext();

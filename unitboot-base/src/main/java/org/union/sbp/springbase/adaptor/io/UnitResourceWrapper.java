@@ -10,6 +10,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+/**
+ * 单元资源加载器包装类
+ *
+ * @author youg
+ * @since JDK1.8
+ */
 public class UnitResourceWrapper extends ClassPathResource {
 
     private Resource resource;

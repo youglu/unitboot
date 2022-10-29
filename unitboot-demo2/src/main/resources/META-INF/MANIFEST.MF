@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: springdemo2unit
-Bundle-SymbolicName: springdemo2unit
+Bundle-SymbolicName: app2
 Bundle-Version: 1.0.0
 Bundle-Activator: org.union.sbp.springdemo2.SpringDemoActivator
 Import-Package: javax.naming,

@@ -65,23 +65,29 @@ public class SpringUnitBootAdaptor {
             // 创建单元子上下文
             final String contextName = springUnitBundle.getSymbolicName();
             ClassLoader unitClassLoader = SpringUnitUtil.getBundleClassLoader(springUnitBundle);
-            // 单元默认配置类.
-            final Class unitConfigurationClass = SpringUnitUtil.findDefaultConfigurationClass(springUnitBundle);//unitClassLoader.loadClass("org.union.sbp.springdemo.config.UnitConfiguration");
+
             Thread.currentThread().setContextClassLoader(unitClassLoader);
-            ((AnnotationConfigServletWebServerApplicationContext)rootApplicationContext).setClassLoader(unitClassLoader);
-            ((AnnotationConfigServletWebServerApplicationContext)rootApplicationContext).getBeanFactory().setBeanClassLoader(unitClassLoader);
+            AnnotationConfigServletWebServerApplicationContext RootConfigServletWebServerApplicationContext = (AnnotationConfigServletWebServerApplicationContext)rootApplicationContext;
+            RootConfigServletWebServerApplicationContext.setClassLoader(unitClassLoader);
+            RootConfigServletWebServerApplicationContext.getBeanFactory().setBeanClassLoader(unitClassLoader);
 
             //先尝试关闭已有同名的context
             unitNamedFactory.closeContext(contextName);
+
+            // 单元默认配置类.
+            final List<Class> unitConfigurationClassList = SpringUnitUtil.findDefaultConfigurationClass(springUnitBundle);
             // 指定默认的配置类.
-            UnitNamedSpec spec = new UnitNamedSpec(contextName, new Class[]{UnitBeanDefinitionRegistryPostProcessor.class, UnitWebConfig.class,unitConfigurationClass});
+            unitConfigurationClassList.add(0,UnitBeanDefinitionRegistryPostProcessor.class);
+            unitConfigurationClassList.add(1,UnitWebConfig.class);
+            UnitNamedSpec spec = new UnitNamedSpec(contextName,unitConfigurationClassList.toArray(new Class<?>[unitConfigurationClassList.size()]));
             List<UnitNamedSpec> specConfigurations = new ArrayList<UnitNamedSpec>();
             specConfigurations.add(spec);
             unitNamedFactory.setConfigurations(specConfigurations);
 
+            //设置主context的classloader与resourceloader为子context的classloader,因为子classloader可以方问到主context的classpath,主单元已导出.
             AnnotationConfigApplicationContext unitApplicationContext = unitNamedFactory.getContextWithCreate(contextName);
-            ResourceLoader resourceLoader = new UnitResourceLoader(unitClassLoader);
-            unitApplicationContext.setResourceLoader(resourceLoader);
+            //ResourceLoader resourceLoader = new UnitResourceLoader(unitClassLoader);
+            //unitApplicationContext.setResourceLoader(resourceLoader);
             unitApplicationContext.setClassLoader(unitClassLoader);
             unitApplicationContext.getBeanFactory().setBeanClassLoader(unitClassLoader);
 

@@ -3,14 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: app1
 Bundle-SymbolicName: app1
 Bundle-Version: 1.0.0
-Bundle-Activator: org.union.sbp.springdemo.SpringDemo1Activator
-Import-Package: javax.naming,
- javax.script,
- javax.sql,
- org.osgi.framework,
- org.apache.commons.logging; spring="true"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Unit-Type: spring-unit
+Bundle-Activator: org.union.sbp.springdemo.SpringDemo1Activator
+Import-Package: org.apache.commons.logging; spring="true"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Spring-ConfigurationClass: org.union.sbp.springdemo.config.UnitConfiguration
 Bundle-ClassPath: .,
  lib/byte-buddy-1.10.8.jar,

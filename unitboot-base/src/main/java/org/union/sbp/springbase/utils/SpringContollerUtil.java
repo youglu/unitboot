@@ -22,6 +22,7 @@ import java.util.Map;
  * spring单元contoller附加到主context中.
  * @author youg
  * @since jdk1.8
+ * @deprecated 不再使用
  */
 public class SpringContollerUtil {
     private final static Logger log = LoggerFactory.getLogger(SpringContollerUtil.class);
@@ -31,7 +32,7 @@ public class SpringContollerUtil {
      * @return
      * @throws NoSuchMethodException
      */
-    public static Map<Method, RequestMappingInfo> unRegisterControllerWithBean(final Object controller) throws NoSuchMethodException {
+    private static Map<Method, RequestMappingInfo> unRegisterControllerWithBean(final Object controller) throws NoSuchMethodException {
         ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
         RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
         final Method getMappingForMethod = requestMappingHandlerMapping.getClass().getSuperclass().getSuperclass().getDeclaredMethod("getMappingForMethod", Method.class,Class.class);
@@ -59,7 +60,7 @@ public class SpringContollerUtil {
      * 将指定controller bean注册到主context。
      * @param controller
      */
-    public static void registerControllerWithBean(final Object controller){
+    private static void registerControllerWithBean(final Object controller){
         final ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
         final RequestMappingHandlerMapping requestMappingHandlerMapping = applicationContext.getBean(RequestMappingHandlerMapping.class);
         try {
@@ -82,7 +83,7 @@ public class SpringContollerUtil {
      * 将指定controller bean注册到主context。
      * @param controller
      */
-    public static void registerFilterWithBean(final Object controller){
+    private static void registerFilterWithBean(final Object controller){
         final ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
         try {
             AnnotationConfigApplicationContext unitApplicationContext = (AnnotationConfigApplicationContext)applicationContext;

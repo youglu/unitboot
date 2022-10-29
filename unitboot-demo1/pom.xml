@@ -45,6 +45,24 @@
             <artifactId>swagger-annotations</artifactId>
         </dependency>
 
+        <!--mybitis整合H2-->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+        <!--H2数据库-->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
+        <!--tkmybatis -->
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
@@ -113,7 +131,7 @@
                         </manifestEntries>
                     </archive>
                     <!--  指定打包的jar包输出路径  -->
-                    <outputDirectory>F:\soft\hora\unitboot-1.0\unit\spring</outputDirectory>
+                    <outputDirectory>${project.basedir}/../unitboot-1.0/unit/spring/</outputDirectory>
                     <!-- 不打入jar包的文件类型或者路径  -->
                     <excludes>
                         <exclude>*.project</exclude>

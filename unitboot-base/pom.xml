@@ -114,7 +114,7 @@
                         </manifestEntries>
                     </archive>
                     <!--  指定打包的jar包输出路径  -->
-                    <outputDirectory>F:\soft\hora\unitboot-1.0\unit\spring</outputDirectory>
+                    <outputDirectory>${project.basedir}/../unitboot-1.0/unit/spring/</outputDirectory>
                     <!-- 不打入jar包的文件类型或者路径  -->
                     <excludes>
                         <exclude>*.project</exclude>

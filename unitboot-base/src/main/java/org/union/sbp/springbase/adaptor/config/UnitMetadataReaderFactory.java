@@ -8,6 +8,11 @@ import org.union.sbp.springbase.adaptor.io.UnitResourceWrapper;
 
 import java.io.IOException;
 
+/**
+ * 暂时不需要了
+ * @deprecated 由启动器提供统一类与资源访问hook实现.
+ */
+@Deprecated
 public class UnitMetadataReaderFactory extends ConcurrentReferenceCachingMetadataReaderFactory {
         public UnitMetadataReaderFactory(){
             super();

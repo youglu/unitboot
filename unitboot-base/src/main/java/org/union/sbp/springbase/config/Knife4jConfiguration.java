@@ -10,6 +10,11 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+/**
+ * 主context的swagger配置，用于提供主要的swagger操作.
+ * @author youg
+ * @since JDK1.8
+ */
 @Configuration
 @EnableSwagger2
 public class Knife4jConfiguration {

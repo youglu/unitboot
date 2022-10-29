@@ -1,18 +1,19 @@
 package org.union.sbp.springbase.adaptor.io;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.UrlResource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.union.sbp.springbase.utils.IoUtil;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.net.URL;
 
 /**
  * 单元资源加载器
  *
  * @author youg
  * @since JDK1.8
- * @deprecated 在启动器增加了hook，优先使用hook方案.
  */
 public class UnitResourceLoader extends ClassPathXmlApplicationContext implements ResourcePatternResolver {
     /**
@@ -63,6 +64,6 @@ public class UnitResourceLoader extends ClassPathXmlApplicationContext implement
      */
     @Override
     public ClassLoader getClassLoader() {
-        return Thread.currentThread().getContextClassLoader();
+        return this.classLoader;//Thread.currentThread().getContextClassLoader();
     }
 }

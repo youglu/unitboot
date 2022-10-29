@@ -192,7 +192,7 @@
         <module>unitboot-base</module>
         <module>unitboot-demo1</module>
         <module>unitboot-demo2</module>
-        <module>hymd</module>
+        <!--<module>hymd</module>-->
     </modules>
     <!-- 所有子模块会实际依赖导入-->
     <dependencies>

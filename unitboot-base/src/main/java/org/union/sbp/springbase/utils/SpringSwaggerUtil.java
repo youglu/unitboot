@@ -12,6 +12,7 @@ import java.util.Map;
  * swagger动态处理.
  * @author youg
  * @since jdk1.8
+ * @deprecated 不再使用
  */
 public class SpringSwaggerUtil {
     private final static Logger log = LoggerFactory.getLogger(SpringSwaggerUtil.class);

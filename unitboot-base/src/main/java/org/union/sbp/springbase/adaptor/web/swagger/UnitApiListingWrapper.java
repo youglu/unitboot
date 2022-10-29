@@ -30,6 +30,11 @@ public class UnitApiListingWrapper extends ApiListing{
                 apiListing.getTags());
         this.unitName = unitName;
     }
+    /**
+     * 增加/unitName作为前缀，此前缀为server.servlet.contextPath配置，但在
+     * 整合中没法获得，导至需要这样处理.
+     * @return
+     */
     @Override
     public List<ApiDescription> getApis() {
         final List<ApiDescription> apiList = super.getApis();

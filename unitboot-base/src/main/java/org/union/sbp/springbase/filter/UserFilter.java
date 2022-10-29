@@ -6,6 +6,11 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import java.io.IOException;
 
+/**
+ * 测试filter
+ * @author youg
+ * @since JDK1.8
+ */
 @Component
 @WebFilter(filterName = "userFilter1",urlPatterns = "/*")
 public class UserFilter implements Filter{

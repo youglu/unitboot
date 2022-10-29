@@ -11,12 +11,26 @@ import org.union.sbp.springbase.adaptor.UnitNamedFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * 主context的DispatcherServlet子类，用于提供根据url是否要转到子单元的能力。
+ * @author youg
+ * @since JDK1.8
+ */
 public class RootDispatcherServlet extends DispatcherServlet {
+    /**
+     * 重写getHandler,用于尝试从url提取子单名名称进行转发。
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @Nullable
     protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-        HandlerExecutionChain handlerExecutionChain = null;
         // 根据URL的首位尝试获得子context
         String unitContextName = getUnitContextNameFromRequest(request);
+        if(StringUtils.isEmpty(unitContextName)){
+            return super.getHandler(request);
+        }
+        HandlerExecutionChain handlerExecutionChain = null;
         UnitDispatcherServlet unitDispatcherServlet = getUnitDispatcherServlet(request,unitContextName);
         if(null != unitDispatcherServlet) {
             handlerExecutionChain = unitDispatcherServlet.getHandler(new UnitRequestWrapper(request,unitContextName));
@@ -35,8 +49,8 @@ public class RootDispatcherServlet extends DispatcherServlet {
      * @param request
      * @return String 子单元名称
      */
-    private String getUnitContextNameFromRequest(HttpServletRequest request) {
-        String requestUri = request.getRequestURI();
+    private String getUnitContextNameFromRequest(final HttpServletRequest request) {
+        final String requestUri = request.getRequestURI();
         //取路径的第一节,/a/b->/a
         if("/".equals(requestUri) || requestUri.length()<=1){
             return null;
@@ -48,15 +62,22 @@ public class RootDispatcherServlet extends DispatcherServlet {
         return pathItems[0];
     }
 
-    private UnitDispatcherServlet getUnitDispatcherServlet(HttpServletRequest request,final String unitContextName){
+    /**
+     * 根据单元名称获得子单元的DispatcherServlet bean。
+     * @author youg
+     * @param request
+     * @param unitContextName 子单元名称
+     * @return
+     */
+    private UnitDispatcherServlet getUnitDispatcherServlet(final HttpServletRequest request,final String unitContextName){
         if(StringUtils.isEmpty(unitContextName)){
            return null;
         }
         // 根据URL的首位尝试获得子context
-        UnitNamedFactory unitNamedFactory = (UnitNamedFactory) SpringUnitBootAdaptor.getUnitNamedFactory();
-        AnnotationConfigApplicationContext uniApplicationContext = unitNamedFactory.getContextByName(unitContextName);
+        final UnitNamedFactory unitNamedFactory = (UnitNamedFactory) SpringUnitBootAdaptor.getUnitNamedFactory();
+        final AnnotationConfigApplicationContext uniApplicationContext = unitNamedFactory.getContextByName(unitContextName);
         if(null != uniApplicationContext){
-            UnitDispatcherServlet unitDispatcherServlet = (UnitDispatcherServlet)unitNamedFactory.getInstance(unitContextName,DispatcherServlet.class);
+            final UnitDispatcherServlet unitDispatcherServlet = (UnitDispatcherServlet)unitNamedFactory.getInstance(unitContextName,DispatcherServlet.class);
             if(null != unitDispatcherServlet){
                 if(!unitDispatcherServlet.isHasInit()){
                     unitDispatcherServlet.refresh(uniApplicationContext);

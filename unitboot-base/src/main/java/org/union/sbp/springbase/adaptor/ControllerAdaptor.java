@@ -15,6 +15,9 @@ import java.util.Map;
  * spring子单元controller适配器.
  * @author youg
  * @since jdk1.8
+ *
+ * @deprecated 不再将子context中的contoller注册到主context中，通过提供单元用的dispatcherservlet来实现
+ * 根据url中的子单元名称转发到相应的子单元中的dispatcherservlet中处理。
  */
 public class ControllerAdaptor {
     private final static Logger log = LoggerFactory.getLogger(ControllerAdaptor.class);
@@ -27,7 +30,7 @@ public class ControllerAdaptor {
      * @param unitApplicationContext
      * @throws Exception
      */
-    public static void addUnitController(final AnnotationConfigApplicationContext unitApplicationContext){
+    private static void addUnitController(final AnnotationConfigApplicationContext unitApplicationContext){
         long startTime = System.currentTimeMillis();
         final Map<String, Object> controllerMap = unitApplicationContext.getBeansWithAnnotation(RestController.class);
         if (null == controllerMap || controllerMap.isEmpty()) {
@@ -38,7 +41,7 @@ public class ControllerAdaptor {
             if(entry.getValue().getClass().getName().startsWith(SWAGGER_CONTROLLER_PACKAGE_PREFIX)){
                 continue;
             }
-            SpringContollerUtil.registerControllerWithBean(entry.getValue());
+            // SpringContollerUtil.registerControllerWithBean(entry.getValue());
         }
         UnitLogger.logUserTimes(log,startTime,"完成controller适配");
         startTime = System.currentTimeMillis();
@@ -55,7 +58,7 @@ public class ControllerAdaptor {
      * @param unitApplicationContext
      * @throws Exception
      */
-    public static void removeUnitController(final AnnotationConfigApplicationContext unitApplicationContext){
+    private static void removeUnitController(final AnnotationConfigApplicationContext unitApplicationContext){
 
     }
 }

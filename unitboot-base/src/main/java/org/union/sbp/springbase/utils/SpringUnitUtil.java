@@ -1,19 +1,27 @@
 package org.union.sbp.springbase.utils;
 
-import org.eclipse.osgi.internal.loader.BundleLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.Version;
-import org.springframework.cglib.core.ReflectUtils;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.util.StringUtils;
+import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
+import org.union.sbp.springbase.adaptor.io.UnitResourceLoader;
 import org.union.sbp.springbase.constinfo.SpringUnit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * spring单元处理工具类
+ * @author youg
+ * @since JDK1.8
  */
 public class SpringUnitUtil {
 
@@ -22,18 +30,34 @@ public class SpringUnitUtil {
      * @param bundle
      * @return
      */
-    public static Class findDefaultConfigurationClass(final Bundle bundle){
+    public static List<Class> findDefaultConfigurationClass(final Bundle bundle){
         try {
+            //保存单元初始配置类
+            final List<Class> unitConfigClassList = new ArrayList<Class>();
+            //尝试从单元的classpath获得注解为UnitConfiguration的类
+            final Class activatorClass = getBundleActivatorClass(bundle);
+            final ClassPathScanningCandidateComponentProvider scanner=new ClassPathScanningCandidateComponentProvider(false);
+            scanner.addIncludeFilter(new AnnotationTypeFilter(UnitConfigComponent.class));
+            scanner.setResourceLoader(new UnitResourceLoader(activatorClass.getClassLoader()));
+            final Set<BeanDefinition> unitConfigClasseDefinitions = scanner.findCandidateComponents(activatorClass.getPackage().getName()+"");
+            if(null != unitConfigClasseDefinitions && unitConfigClasseDefinitions.size()>0){
+                unitConfigClasseDefinitions.forEach((beanDefinition)->{
+                    try {
+                        unitConfigClassList.add(bundle.loadClass(beanDefinition.getBeanClassName()));
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            //如果没有找到，则尝试从单元元文件获得配置类
             final String defaultSpringConfigurationClassName = bundle.getHeaders().get("Spring-ConfigurationClass");
-            return bundle.loadClass(defaultSpringConfigurationClassName);
-
-            //Method getClassLoaderMethod = ReflectUtils.findDeclaredMethod(bundle.getClass(),"getClassLoader",new Class[]{});
-            //getClassLoaderMethod.setAccessible(true);
-            //Object bundleLoaderObj = getClassLoaderMethod.invoke(bundle,null);
-            // ClassLoader bundleLoader = ((BundleHost) bundle).getClassLoader();
-            //if(null != bundleLoaderObj){
-             //   BundleLoader bundleLoader = (BundleLoader)bundleLoaderObj;
-            //}
+            if(unitConfigClasseDefinitions.isEmpty() && !StringUtils.isEmpty(defaultSpringConfigurationClassName)) {
+                String[] configClassNames = defaultSpringConfigurationClassName.split(",");
+                for(String configClassName:configClassNames) {
+                    unitConfigClassList.add(bundle.loadClass(configClassName));
+                }
+            }
+            return unitConfigClassList;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -76,6 +100,33 @@ public class SpringUnitUtil {
         }
         return null;
     }
+
+    /**
+     * 根据单元获得单元的启动器类
+     * @param unitBundle
+     * @param <T>
+     * @return
+     */
+    public static <T> Class<T> getBundleActivatorClass(final Bundle unitBundle){
+        String activatorClassName = unitBundle.getHeaders().get(SpringUnit.UNIT_ACTIVATOR_CLASS_NAME);
+        try {
+            if(StringUtils.isEmpty(activatorClassName)){
+                return null;
+            }
+            return (Class<T>) unitBundle.loadClass(activatorClassName);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    /**
+     * 根据子context获得相应的bundle
+     * @param unitApplicationContext
+     * @return
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     public static Bundle getBundleByApplicationContext(final ApplicationContext unitApplicationContext) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if(null == unitApplicationContext){
             return null;

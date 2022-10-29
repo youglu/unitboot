@@ -28,6 +28,11 @@ public class UnitDocumentation extends Documentation {
                 originalDocumentation.getVendorExtensions());
         this.unitName = unitName;
     }
+    /**
+     * 增加/unitName作为前缀，此前缀为server.servlet.contextPath配置，但在
+     * 整合中没法获得，导至需要这样处理.
+     * @return
+     */
     @Override
     public Map<String, List<ApiListing>> getApiListings() {
         final Map<String, List<ApiListing>> apiListings = super.getApiListings();

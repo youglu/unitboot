@@ -9,6 +9,11 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import java.io.IOException;
 
+/**
+ * 测试filter
+ * @author youg
+ * @since JDK1.8
+ */
 @WebFilter(initParams = {@WebInitParam(name = "strfilter",value = "/str2")})
 public class StringFilter extends DelegatingFilterProxy {
     @Override
