@@ -10,7 +10,7 @@ import org.union.sbp.springbase.utils.SpringUnitUtil;
  * @author youg
  * @since JDK1.8
  */
-public class UnitListener implements BundleListener {
+public class UnitBootListener implements BundleListener {
     /**
      * 单元变更事件处理
      * @param event

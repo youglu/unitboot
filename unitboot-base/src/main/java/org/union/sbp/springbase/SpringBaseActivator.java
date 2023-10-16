@@ -9,9 +9,9 @@ import org.springframework.boot.web.servlet.context.ServletWebServerApplicationC
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.union.sbp.springbase.listener.UnitBootListener;
 import org.union.sbp.springbase.utils.IoUtil;
 import org.union.sbp.springbase.utils.SpringContextUtil;
-import org.union.sbp.springbase.listener.UnitListener;
 import org.union.sbp.springbase.utils.SpringStreamHanderFactoryUtil;
 
 /**
@@ -30,9 +30,10 @@ public class SpringBaseActivator implements BundleActivator {
      */
     public void start(BundleContext context) {
         try {
+            Class.forName("org.hibernate.validator.internal.engine.ConfigurationImpl");
             initSpringBoot();
             // 添加单元监听器，用于自动配置spring单元.
-            context.addBundleListener(new UnitListener());
+            context.addBundleListener(new UnitBootListener());
             System.out.println("spring基础环境初始化完毕");
         } catch (Exception e) {
             e.printStackTrace();

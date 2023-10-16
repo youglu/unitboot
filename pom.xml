@@ -192,7 +192,8 @@
         <module>unitboot-base</module>
         <module>unitboot-demo1</module>
         <module>unitboot-demo2</module>
-        <!--<module>hymd</module>-->
+        <module>unitboot-launcher</module>
+        <module>unitboot-web</module>
     </modules>
     <!-- 所有子模块会实际依赖导入-->
     <dependencies>
@@ -236,7 +237,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludeArtifactIds>spring-aop,spring-boot-starter-aop,org.osgi.core,swagger-annotations,springfox-swagger2,springfox-swagger-common,springfox-spring-webflux,spring-context-support,spring-boot-autoconfigure,spring-plugin-core,spring-plugin-metadata,springfox-core,springfox-schema,springfox-spi,springfox-spring-web,springfox-spring-webmvc,springfox-swagger-ui,spring-boot,spring-cloud-context,spring-context,spring-core,spring-expression,spring-security-crypto,spring-web,spring-webmvc,spring-boot-starter,spring-aop,spring-beans,spring-boot-autoconfigure,spring-boot-starter-json,spring-boot-starter-logging,spring-boot-starter-tomcat,spring-boot-starter-validation,spring-boot-starter-web,spring-jcl</excludeArtifactIds>
+                            <excludeArtifactIds>knife4j-annotations,knife4j-core,knife4j-spring,knife4j-spring-boot-autoconfigure,knife4j-spring-boot-starter,knife4j-spring-ui,org.eclipse.osgi,netty-transport,netty-resolver,netty-handler,netty-common,netty-codec,netty-buffer,spring-boot-starter-data-redis,spring-boot-starter-jdbc,spring-data-commons,spring-data-keyvalue,spring-data-redis,spring-jdbc,springfox-bean-validators,spring-aop,spring-boot-starter-aop,org.osgi.core,swagger-annotations,springfox-swagger2,springfox-swagger-common,springfox-spring-webflux,spring-context-support,spring-boot-autoconfigure,spring-plugin-core,spring-plugin-metadata,springfox-core,springfox-schema,springfox-spi,springfox-spring-web,springfox-spring-webmvc,springfox-swagger-ui,spring-boot,spring-cloud-context,spring-context,spring-core,spring-expression,spring-security-crypto,spring-web,spring-webmvc,spring-boot-starter,spring-aop,spring-beans,spring-boot-autoconfigure,spring-boot-starter-json,spring-boot-starter-logging,spring-boot-starter-tomcat,spring-boot-starter-validation,spring-boot-starter-web,spring-jcl</excludeArtifactIds>
                             <excludeGroupIds>ch.qos.logback,org.hibernate.validator,com.fasterxml.jackson.core,com.fasterxml.jackson,org.apache.tomcat.embed,com.union.unitboot</excludeGroupIds>
                             <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
                         </configuration>

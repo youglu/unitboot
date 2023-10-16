@@ -1,5 +1,9 @@
 package org.union.sbp.springdemo;
 
+import org.h2.engine.Comment;
+import org.h2.engine.Database;
+import org.h2.engine.Session;
+import org.h2.util.CurrentTimestamp;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

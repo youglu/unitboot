@@ -40,7 +40,6 @@ public class UnitResourceLoader extends ClassPathXmlApplicationContext implement
      */
     @Override
     public Resource[] getResources(String s) throws IOException {
-        System.out.println(s);
         return super.getResources(s);
     }
     /**

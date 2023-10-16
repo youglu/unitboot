@@ -122,6 +122,7 @@
     <orderEntry type="library" name="Maven: tk.mybatis:mapper-spring-boot-autoconfigure:1.1.4" level="project" />
     <orderEntry type="library" name="Maven: tk.mybatis:mapper:3.4.3" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.core:4.3.1" level="project" />
   </component>
 </module>
