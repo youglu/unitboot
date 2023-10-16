@@ -4,12 +4,12 @@
 
 运行及更新步骤
 
-###1：下载所有文件
+### 1：下载所有文件
 
-###2：运行
+### 2：运行
 进入unitboot-1.0\bin,windows直接运行start.bat
 
-###3：更新springboot单元
+### 3：更新springboot单元
 以unitboot-demo1为例，先构建打包好unitboot-demo1,然后将包替换到unitboot-1.0\spring中，
 然后在第2步启动的控制台中执行以下命令
 
