@@ -1,6 +1,8 @@
 package org.union.sbp.springbase.utils;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -11,6 +13,7 @@ import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 import org.union.sbp.springbase.adaptor.io.UnitResourceLoader;
 import org.union.sbp.springbase.constinfo.SpringUnit;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -120,7 +123,8 @@ public class SpringUnitUtil {
         return null;
     }
     /**
-     * 根据子context获得相应的bundle
+     * 根据子context获得相应的bundle,主要是解析applicatonName来获得.由于在统一处理时，有用
+     * 单元的 id|synblicName 人为context的名称，因此这里可以获得相应的内容.
      * @param unitApplicationContext
      * @return
      * @throws NoSuchMethodException
@@ -130,6 +134,12 @@ public class SpringUnitUtil {
     public static Bundle getBundleByApplicationContext(final ApplicationContext unitApplicationContext) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if(null == unitApplicationContext){
             return null;
+        }
+        final String contextName = unitApplicationContext.getDisplayName();
+        if(contextName.indexOf("|") != -1){
+            String[] unitId_synblicName = contextName.split("\\|");
+            String unitId = unitId_synblicName[0].split("\\-")[1];
+            return UnitUtil.getBundleByBundleId(Long.valueOf(unitId));
         }
         ClassLoader unitClassLoader = unitApplicationContext.getClassLoader();
         if(!unitClassLoader.getClass().getName().equals("org.eclipse.osgi.internal.baseadaptor.DefaultClassLoader")){

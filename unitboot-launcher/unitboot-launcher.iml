@@ -10,5 +10,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="Maven: org.eclipse.osgi:org.eclipse.osgi:3.9.1.v20130814-1242">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../unitboot-1.0/bin/org.eclipse.osgi_3.9.1.v20130814-1242.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.2" level="project" />
   </component>
 </module>

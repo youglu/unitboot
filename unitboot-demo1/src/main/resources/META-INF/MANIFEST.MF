@@ -8,7 +8,7 @@ Bundle-Activator: org.union.sbp.springdemo.SpringDemo1Activator
 Import-Package: org.apache.commons.logging; spring="true"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Spring-ConfigurationClass: org.union.sbp.springdemo.config.UnitConfiguration
-Require-Bundle: springbase2
+Require-Bundle: springbase
 Bundle-ClassPath: .,
  lib/aspectjweaver-1.9.5.jar,
  lib/byte-buddy-1.10.8.jar,

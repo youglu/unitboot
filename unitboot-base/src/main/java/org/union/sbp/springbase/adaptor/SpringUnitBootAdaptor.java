@@ -43,32 +43,32 @@ public class SpringUnitBootAdaptor {
     }
     /**
      * 单元安装处理.
-     * @param springUnitBundle
+     * @param springUnit
      */
-    public static void startSpringUnit(final Bundle springUnitBundle){
+    public static void startSpringUnit(final Bundle springUnit){
 
             final long startTime = System.currentTimeMillis();
             final ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
             try {
                 //如果不是spring单元测不处理
-                String  unitType = springUnitBundle.getHeaders().get("Unit-Type");
+                String  unitType = springUnit.getHeaders().get("Unit-Type");
                 if(StringUtils.isEmpty(unitType) || !SRING_UNIT.equals(unitType)){
                     UnitLogger.info(log,"当前单元不是Spring单元，不进行Spring适配");
                     return;
                 }
                 // 如果是当前单元则跳过.
-                if(springUnitBundle.getSymbolicName().equals(FrameworkUtil.getBundle(SpringUnitUtil.class).getSymbolicName())){
+                if(springUnit.getSymbolicName().equals(FrameworkUtil.getBundle(SpringUnitUtil.class).getSymbolicName())){
                     return;
                 }
                 //设置主springContext
                 ApplicationContext rootApplicationContext = SpringContextUtil.getApplicationContext();
                 unitNamedFactory.setApplicationContext(rootApplicationContext);
                 // 创建单元子上下文
-                final String contextName = springUnitBundle.getSymbolicName();
-                ClassLoader unitClassLoader = SpringUnitUtil.getBundleClassLoader(springUnitBundle);
+                final String contextName = getContextName(springUnit);
+                ClassLoader unitClassLoader = SpringUnitUtil.getBundleClassLoader(springUnit);
 
                 Thread.currentThread().setContextClassLoader(unitClassLoader);
-                AnnotationConfigServletWebServerApplicationContext RootConfigServletWebServerApplicationContext = (AnnotationConfigServletWebServerApplicationContext)rootApplicationContext;
+                //AnnotationConfigServletWebServerApplicationContext RootConfigServletWebServerApplicationContext = (AnnotationConfigServletWebServerApplicationContext)rootApplicationContext;
                 //RootConfigServletWebServerApplicationContext.setClassLoader(unitClassLoader);
                 //RootConfigServletWebServerApplicationContext.getBeanFactory().setBeanClassLoader(unitClassLoader);
 
@@ -76,8 +76,8 @@ public class SpringUnitBootAdaptor {
                 // unitNamedFactory.closeContext(contextName);
 
                 // 单元默认配置类.
-                final List<Class> unitConfigurationClassList = SpringUnitUtil.findDefaultConfigurationClass(springUnitBundle);
-                // 指定默认的配置类.
+                final List<Class> unitConfigurationClassList = SpringUnitUtil.findDefaultConfigurationClass(springUnit);
+                // 指定默认的配置类 .
                 unitConfigurationClassList.add(0,UnitBeanDefinitionRegistryPostProcessor.class);
                 unitConfigurationClassList.add(1,UnitWebConfig.class);
 
@@ -94,7 +94,7 @@ public class SpringUnitBootAdaptor {
 
                 //暂时不需要这两行代码
                 //SpringUnitApplication springUnitApplication = new SpringUnitApplication();
-                //springUnitApplication.start(springUnitBundle,unitApplicationContext,new Object[]{unitClassLoader});
+                //springUnitApplication.start(springUnit,unitApplicationContext,new Object[]{unitClassLoader});
 
                 //将子context中的swagger document对象加到主context中，以便统一管理.
                 SwaggerAdaptor.addUnitSwagger(unitApplicationContext);
@@ -110,10 +110,10 @@ public class SpringUnitBootAdaptor {
     }
     /**
      * 单元卸载处理.
-     * @param springUnitBundle
+     * @param springUnit
      */
-    public static void stopSpringUnit(final Bundle springUnitBundle){
-        final String contextName = springUnitBundle.getSymbolicName();
+    public static void stopSpringUnit(final Bundle springUnit){
+        final String contextName = getContextName(springUnit);
         AnnotationConfigApplicationContext applicationContext = unitNamedFactory.getContextByName(contextName);
         if(null != applicationContext) {
             try {
@@ -125,5 +125,14 @@ public class SpringUnitBootAdaptor {
         }
         unitNamedFactory.closeContext(contextName);
         System.out.println("卸载spring单元");
+    }
+
+    /**
+     * 根据单元对象获得spring上下文名称.
+     * @param springUnit spring单元对象.
+     * @return String
+     */
+    public static String getContextName(final Bundle springUnit){
+        return springUnit.getBundleId()+"|"+springUnit.getSymbolicName();
     }
 }

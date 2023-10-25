@@ -11,7 +11,7 @@ import java.util.Properties;
 public class UnitLauncher {
 
     public static void main(String[] args) throws Exception {
-        args = new String[]{"-console","-dev","-debug"};
+        args = new String[]{"-console","-dev","-debug","-clean"};
         Properties properties = new Properties();
         properties.load(UnitLauncher.class.getResourceAsStream("/config.properties"));
         String osName = System.getProperty("os.name").toLowerCase();

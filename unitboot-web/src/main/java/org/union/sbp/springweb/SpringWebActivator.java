@@ -12,10 +12,10 @@ public class SpringWebActivator implements BundleActivator {
 
 	public void start(BundleContext context) throws Exception {
 		SprinpWebApplication.main(new String[]{});
-		System.out.println("spring demo2初始化完毕");
+		System.out.println("spring web初始化完毕");
 	}
 
 	public void stop(BundleContext context) throws Exception {
-		System.out.println("停止spring demo2单元");
+		System.out.println("停止spring web单元");
 	}
 }

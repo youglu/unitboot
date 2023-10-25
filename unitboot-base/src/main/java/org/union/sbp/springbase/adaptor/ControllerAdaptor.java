@@ -16,7 +16,7 @@ import java.util.Map;
  * @author youg
  * @since jdk1.8
  *
- * @deprecated 不再将子context中的contoller注册到主context中，通过提供单元用的dispatcherservlet来实现
+ * @deprecated 不再将子context中的contoller注册到主context中，改为通过提供单元用的dispatcherservlet来实现
  * 根据url中的子单元名称转发到相应的子单元中的dispatcherservlet中处理。
  */
 public class ControllerAdaptor {
