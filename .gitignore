@@ -1,0 +1,5 @@
+unitboot-1.0/bin/configuration/org.eclipse.osgi
+unitboot-1.0/bin/configuration/org.eclipse.core.runtime
+unitboot-base/target/
+unitboot-demo1/target
+unitboot-launcher/target
