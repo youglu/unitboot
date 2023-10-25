@@ -5,11 +5,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.config.ConfigFileApplicationListener;
-import org.springframework.boot.env.OriginTrackedMapPropertySource;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ConfigurationClassPostProcessor;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -17,7 +15,6 @@ import org.springframework.core.env.StandardEnvironment;
 import org.union.sbp.springbase.utils.SpringUnitUtil;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,10 +24,11 @@ import java.util.Map;
  * @author youg
  * @since jdk1.8
  */
-public class UnitBeanDefinitionRegistryPostProcessor extends ConfigurationClassPostProcessor implements ApplicationContextAware {
+public class UnitBeanDefinitionRegistryPostProcessor /*extends ConfigurationClassPostProcessor*/ implements ApplicationContextAware {
     /**
      * 子context的环境变量
      */
+    @Autowired
     private Environment environment;
 
     /**
@@ -44,11 +42,11 @@ public class UnitBeanDefinitionRegistryPostProcessor extends ConfigurationClassP
      * 重写设置环境变量方法.
      * @param environment
      */
-    @Override
-    public void setEnvironment(Environment environment) {
-        super.setEnvironment(environment);
-        this.environment = environment;
-    }
+    //@Override
+    //public void setEnvironment(Environment environment) {
+      //  super.setEnvironment(environment);
+      //  this.environment = environment;
+    //}
 
     /**
      * 重写设置ApplicationContext方法，此方法在setEnvironment之后调用.
