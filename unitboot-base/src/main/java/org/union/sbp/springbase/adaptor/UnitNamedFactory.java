@@ -1,6 +1,8 @@
 package org.union.sbp.springbase.adaptor;
 
+import org.springframework.beans.BeansException;
 import org.springframework.cloud.context.named.NamedContextFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.lang.reflect.Field;
@@ -16,7 +18,7 @@ public class UnitNamedFactory extends NamedContextFactory<UnitNamedSpec> {
      * 反射获得父类的context MAP。
      */
     private Map<String, AnnotationConfigApplicationContext> contexts = null;
-
+    private volatile boolean hasParentContext = false;
 
     /**
      * 构造器.
@@ -68,4 +70,24 @@ public class UnitNamedFactory extends NamedContextFactory<UnitNamedSpec> {
         return super.getContext(name);
     }
 
+    /**
+     * 重写设置父容器方法，用于记录是否有父容器标识.
+     *
+     * @param parent 父容器对象
+     * @throws BeansException
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext parent) throws BeansException {
+        super.setApplicationContext(parent);
+        hasParentContext = true;
+    }
+
+    /**
+     * 获得是否已经设置了父容器标识.
+     *
+     * @return boolean
+     */
+    public boolean isHasParentContext(){
+        return hasParentContext;
+    }
 }
