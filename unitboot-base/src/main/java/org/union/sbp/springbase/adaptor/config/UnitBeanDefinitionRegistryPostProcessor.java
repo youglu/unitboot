@@ -1,5 +1,6 @@
 package org.union.sbp.springbase.adaptor.config;
 
+import org.eclipse.osgi.framework.internal.core.BundleHost;
 import org.osgi.framework.Bundle;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
+import org.springframework.core.io.ResourceLoader;
+import org.union.sbp.springbase.adaptor.io.UnitResourceLoader;
 import org.union.sbp.springbase.utils.SpringUnitUtil;
 
 import java.lang.reflect.InvocationTargetException;
@@ -57,16 +60,20 @@ public class UnitBeanDefinitionRegistryPostProcessor /*extends ConfigurationClas
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         AnnotationConfigApplicationContext unitApplicationContext = (AnnotationConfigApplicationContext)applicationContext;
         try {
+
             final Bundle unitBundle = SpringUnitUtil.getBundleByApplicationContext(unitApplicationContext);
             addUnitBootFlagProperty(applicationContext,unitBundle);
+
+            ClassLoader unitClassLoader = ((BundleHost) unitBundle).getClassLoader();
+
             // unitApplicationContext.registerBean();
-            /*
-            ClassLoader unitClassLoader = Thread.currentThread().getContextClassLoader();
+
             ResourceLoader resourceLoader = new UnitResourceLoader(unitClassLoader);
             unitApplicationContext.setResourceLoader(resourceLoader);
             unitApplicationContext.setClassLoader(unitClassLoader);
             unitApplicationContext.getBeanFactory().setBeanClassLoader(unitClassLoader);
 
+            /*
             StandardEnvironment standardEnvironment = (StandardEnvironment)unitApplicationContext.getParent().getEnvironment();
 
             String beanName = "org.springframework.boot.autoconfigure.internalCachingMetadataReaderFactory";
@@ -97,6 +104,11 @@ public class UnitBeanDefinitionRegistryPostProcessor /*extends ConfigurationClas
             contextPath = "/"+unitName+contextPath;
             MapPropertySource unitbootPropertySource = (MapPropertySource)standardEnvironment.getPropertySources().get("unitboot");//.addFirst("server.servlet.context-path",contextPath);
             unitbootPropertySource.getSource().put("server.servlet.context-path",contextPath);
+
+            // 添加单元所有的包路径作为扫描bean的路径
+            final Class activatorClass = SpringUnitUtil.getBundleActivatorClass(unitBundle);
+            final Package classPackage = activatorClass.getPackage();
+            unitApplicationContext.scan(classPackage.getName()+".**");
         } catch (Exception e) {
             throw new RuntimeException("添加子单元标识属性到子环境变量中发生异常",e);
         }
