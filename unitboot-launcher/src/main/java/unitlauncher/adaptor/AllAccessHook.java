@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * @since JDK1.8
  */
 public class AllAccessHook implements ClassLoaderDelegateHook {
-
     private final GlobalClassLoader globalClassLoader;
     private final GlobalResourceLoader globalResourceLoader;
     private BaseAdaptor adaptor = null;

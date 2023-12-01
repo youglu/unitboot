@@ -2,6 +2,7 @@ package org.union.sbp.springdemo.config;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+import org.springframework.beans.factory.support.DefaultBeanNameGenerator;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
@@ -13,7 +14,7 @@ import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 
 
 @EnableConfigurationProperties(DataSourceProperties.class)
-@ComponentScan(value = {"org.union.sbp.springdemo.controller.**"}
+@ComponentScan(value = {"org.union.sbp.springdemo.controller.**"}, nameGenerator = DefaultBeanNameGenerator.class
         ,basePackageClasses = {JdbcTemplateAutoConfiguration.class, MailSenderAutoConfiguration.class, DataSourceAutoConfiguration.class}
         )
 @MapperScan(basePackages = {"org.union.sbp.springdemo.dao"})

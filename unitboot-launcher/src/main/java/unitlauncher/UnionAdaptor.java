@@ -4,7 +4,10 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import unitlauncher.adaptor.AllAccessHook;
+import unitlauncher.adaptor.UnitClasspathLoaderClassHook;
 
 import java.lang.reflect.Field;
 
@@ -14,6 +17,11 @@ import java.lang.reflect.Field;
  * @since JDK1.8
  */
 public class UnionAdaptor extends org.eclipse.osgi.baseadaptor.BaseAdaptor implements FrameworkListener {
+    /**
+     * 日志.
+     */
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     /**
      * 默认构造器.
      * @param args
@@ -41,7 +49,10 @@ public class UnionAdaptor extends org.eclipse.osgi.baseadaptor.BaseAdaptor imple
             final Field readonlyField = getHookRegistry().getClass().getDeclaredField("readonly");
             readonlyField.setAccessible(true);
             readonlyField.setBoolean(getHookRegistry(), false);
+
             getHookRegistry().addClassLoaderDelegateHook(new AllAccessHook(this));
+            getHookRegistry().addClassLoadingStatsHook(new UnitClasspathLoaderClassHook());
+
             readonlyField.setBoolean(getHookRegistry(), true);
             readonlyField.setAccessible(false);
         }catch (Exception e){
@@ -49,13 +60,14 @@ public class UnionAdaptor extends org.eclipse.osgi.baseadaptor.BaseAdaptor imple
         }
     }
 
+    /**
+     * 框架事件处理
+     * @param frameworkEvent
+     */
     @Override
     public void frameworkEvent(FrameworkEvent frameworkEvent) {
-        System.out.println(frameworkEvent.getBundle());
-        System.out.println(frameworkEvent.getThrowable());
         if(null != frameworkEvent.getThrowable()){
             frameworkEvent.getThrowable().printStackTrace();
         }
-        System.out.println(frameworkEvent);
     }
 }
