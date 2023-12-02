@@ -1,0 +1,2 @@
+#!/bin/bash
+/Volumes/UD1/soft/jdk/jdk-21.0.1.jdk/Contents/Home/bin/java -jar org.eclipse.osgi_3.18.600.v20231110-1900.jar -console -dev -debug -clean
