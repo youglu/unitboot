@@ -70,10 +70,54 @@ public final class ReflectUtil {
 			fieldClass = instance.getClass();
 		}
 		if(fieldClass != null) {
-			final Field field = fieldClass.getDeclaredField(fieldName);
+			Field field = findField(fieldName,fieldClass);
 			field.setAccessible(true);
 			field.set(instance, fieldValue);
 		}
+	}
+	/**
+	 * @Description: 根据给定的属性名获得属性对象.
+	 *
+	 * @author youg
+	 * @since jdk1.8
+	 * @return Field
+	 */
+	private static Field findField(final String fieldName, final Class fieldClass)  {
+		if(fieldClass != null) {
+			Field field = null;
+			try {
+				field = fieldClass.getDeclaredField(fieldName);
+			} catch (NoSuchFieldException e) {
+				LOGGER.error("从:{} 获得属性:{} 发生异常:{}",fieldClass,fieldName,e.getMessage());
+			}
+			while(null == field && fieldClass != Object.class){
+				field = findField(fieldName,fieldClass.getSuperclass());
+			}
+			return field;
+		}
+		return null;
+	}
+	/**
+	 * @Description: 根据给定的方法名获得方法对象.
+	 *
+	 * @author youg
+	 * @since jdk1.8
+	 * @return Method
+	 */
+	private static Method findMethod(final String methodName, final Class methodClass,Class...paramTypes)   {
+		if(methodClass != null) {
+			Method method = null;
+			try {
+				method = methodClass.getDeclaredMethod(methodName,paramTypes);
+			} catch (NoSuchMethodException e) {
+				LOGGER.error("从:{} 获得属方法:{} 发生异常:{}",methodClass,methodName,e.getMessage());
+			}
+			while(null == method && methodClass != Object.class){
+				method = findMethod(methodName,methodClass.getSuperclass(),paramTypes);
+			}
+			return method;
+		}
+		return null;
 	}
 	/**
 	 * 反射调用方法.
@@ -94,7 +138,7 @@ public final class ReflectUtil {
 			methodClass = instance.getClass();
 		}
 		if(methodClass != null) {
-			final Method method = methodClass.getDeclaredMethod(methodName, paramTypes);
+			final Method method = findMethod(methodName,methodClass, paramTypes);
 			final boolean accessble = method.isAccessible();
 			try {
 				method.setAccessible(true);

@@ -5,6 +5,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -30,7 +31,7 @@ public class SpringBaseActivator implements BundleActivator {
      */
     public void start(BundleContext context) {
         try {
-            Class.forName("org.hibernate.validator.internal.engine.ConfigurationImpl");
+            // Class.forName("org.hibernate.validator.internal.engine.ConfigurationImpl");
             initSpringBoot();
             // 添加单元监听器，用于自动配置spring单元.
             context.addBundleListener(new UnitBootListener());
@@ -78,10 +79,13 @@ public class SpringBaseActivator implements BundleActivator {
      * 停止springboot
      */
     private void stopSpringBoot() {
+
         final ConfigurableApplicationContext applicationContext = (ConfigurableApplicationContext) SpringContextUtil.getApplicationContext();
-        if(null != applicationContext){
-			if (applicationContext instanceof ServletWebServerApplicationContext) {
-				((ServletWebServerApplicationContext) applicationContext).getWebServer().stop();
+        if(null != applicationContext && applicationContext instanceof ServletWebServerApplicationContext) {
+                WebServer webServer = ((ServletWebServerApplicationContext) applicationContext).getWebServer();
+                if(null != webServer) {
+                    ((ServletWebServerApplicationContext) applicationContext).getWebServer().stop();
+                }
 			}
 			if (applicationContext.isActive()) {
 				try {
@@ -91,5 +95,5 @@ public class SpringBaseActivator implements BundleActivator {
 				}
 			}
 		}
-    }
+
 }

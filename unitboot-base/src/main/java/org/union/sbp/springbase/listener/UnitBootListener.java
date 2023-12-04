@@ -14,7 +14,7 @@ public class UnitBootListener implements org.osgi.framework.BundleListener {
      * @param event
      */
     @Override
-    public void bundleChanged(BundleEvent event) {
+    public synchronized void bundleChanged(BundleEvent event) {
         switch (event.getType()){
             case BundleEvent.STOPPED:
                 SpringUnitBootAdaptor.stopSpringUnit(event.getBundle());

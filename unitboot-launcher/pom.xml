@@ -14,7 +14,7 @@
             <artifactId>org.eclipse.osgi</artifactId>
             <version>3.9.1.v20130814-1242</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/../unitboot-1.0/bin/org.eclipse.osgi_3.9.1.v20130814-1242.jar</systemPath>
+            <systemPath>${project.basedir}/../unitboot-1.0/bin/org.eclipse.osgi-3.9.1-v20130814-1242.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>

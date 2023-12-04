@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.eclipse</groupId>
+
+    <artifactId>org.eclipse.osgi</artifactId>
+    <version>3.9.1-v20130814-1242</version>
+    <name>org.eclipse.osgi</name>
+    <description>osgi equinox implement</description>
+    <packaging>jar</packaging>
+    <url>http://www.eclipse.org</url>
+
+
+    <build>
+        <plugins>
+            <!--  打包时,添加信息  -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <!--  指定打包的jar包输出路径  -->
+                    <outputDirectory>${project.basedir}/../unitboot-1.0/bin/</outputDirectory>
+                    <!-- 不打入jar包的文件类型或者路径  -->
+                    <excludes>
+                        <exclude>*.project</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <url/>
+        <connection/>
+    </scm>
+    <developers>
+        <developer/>
+    </developers>
+    <licenses>
+        <license>
+            <name>Eclipse Public License - v 1.0</name>
+            <url>http://www.eclipse.org/org/documents/epl-v10.html</url>
+        </license>
+    </licenses>
+</project>

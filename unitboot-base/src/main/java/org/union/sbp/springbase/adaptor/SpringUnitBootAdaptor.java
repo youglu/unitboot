@@ -14,6 +14,7 @@ import org.union.sbp.springbase.adaptor.config.UnitWebConfig;
 import org.union.sbp.springbase.utils.SpringContextUtil;
 import org.union.sbp.springbase.utils.SpringUnitUtil;
 import org.union.sbp.springbase.utils.UnitLogger;
+import unitlauncher.utils.SpringBootUnitThreadLocal;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -53,11 +54,12 @@ public class SpringUnitBootAdaptor {
      *
      * @param springUnit
      */
-    public static void startSpringUnit(final Bundle springUnit) {
+    public synchronized static void startSpringUnit(final Bundle springUnit) {
 
         final long startTime = System.currentTimeMillis();
         final ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
         try {
+            // SpringBootUnitThreadLocal.set(springUnit.getBundleId());
             //如果不是spring单元测不处理
             String unitType = springUnit.getHeaders().get("Unit-Type");
             if (StringUtils.isEmpty(unitType) || !SRING_UNIT.equals(unitType)) {
@@ -114,6 +116,7 @@ public class SpringUnitBootAdaptor {
             e.printStackTrace();
         } finally {
             Thread.currentThread().setContextClassLoader(currentClassLoader);
+            // SpringBootUnitThreadLocal.remove();
         }
         UnitLogger.logUserTimes(log, startTime, "完成springboot单元微内核适配");
 
@@ -124,7 +127,7 @@ public class SpringUnitBootAdaptor {
      *
      * @param springUnit
      */
-    public static void stopSpringUnit(final Bundle springUnit) {
+    public synchronized static void stopSpringUnit(final Bundle springUnit) {
         final String contextName = getContextName(springUnit);
         final AnnotationConfigApplicationContext applicationContext = unitNamedFactory.getContextByName(contextName);
         if (null != applicationContext) {

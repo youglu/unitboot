@@ -10,8 +10,10 @@ import org.eclipse.osgi.internal.loader.BundleLoaderProxy;
 import org.eclipse.osgi.internal.module.ResolverBundle;
 import org.eclipse.osgi.internal.module.ResolverImpl;
 import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.osgi.framework.Bundle;
 import unitlauncher.utils.GlobalClassLoader;
 import unitlauncher.utils.GlobalResourceLoader;
+import unitlauncher.utils.SpringBootUnitThreadLocal;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
@@ -32,7 +34,8 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
     private String[] proxyClassNames = new String[]{
             "com.zaxxer.hikari.HikariDataSource",
             "tk.mybatis.mapper.autoconfigure",
-            "org.h2.Driver"};
+            "org.h2.Driver",
+            "org.h2.upgrade.DbUpgrade"};
     private String[] proxyResourceNames = new String[]{
             "org/mybatis/spring/boot/autoconfigure",
             "com/alibaba/druid/spring/boot/autoconfigure",
@@ -73,10 +76,10 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
      */
         @Override
         public Class<?> postFindClass(String className, BundleClassLoader bundleClassLoader, BundleData bundleData) throws ClassNotFoundException {
-           // System.out.println("postFindClass:"+className);
+
             if(null == className){
                 return null;
-            }
+            } 
             boolean canProxy = false;
             for(String clazzName:proxyClassNames){
                 if(className.startsWith(clazzName)){
@@ -89,7 +92,6 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
             }
             // 尝试全局加载
             Class<?> clazz = globalClassLoader.findLocalClass(className,bundleData.getBundle());
-            // System.out.println("尝试全局加载加载类-->"+className+"="+clazz);
             return clazz;
         }
 

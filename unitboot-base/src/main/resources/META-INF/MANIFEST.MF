@@ -571,4 +571,4 @@ Export-Package: org.union.sbp.springbase.adaptor.config,
  com.fasterxml.jackson.databind.type,
  com.fasterxml.jackson.databind.util
 Bundle-Vendor: unitor
-Dynamicimport-Package: *
+DynamicImport-Package: *

@@ -26,4 +26,4 @@ Bundle-ClassPath: .,
  lib/slf4j-api-1.7.30.jar,
  lib/snakeyaml-1.25.jar
 Bundle-Vendor: unitor
-Dynamicimport-Package: *
+DynamicImport-Package: *

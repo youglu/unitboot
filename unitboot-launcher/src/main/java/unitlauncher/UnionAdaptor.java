@@ -1,12 +1,16 @@
 package unitlauncher;
 
+import org.eclipse.osgi.internal.module.ResolverImpl;
+import org.eclipse.osgi.internal.resolver.StateImpl;
+import org.eclipse.osgi.internal.resolver.SystemState;
+import org.eclipse.osgi.service.resolver.State;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import unitlauncher.adaptor.AllAccessHook;
+import unitlauncher.adaptor.AllAccessHook; 
 import unitlauncher.adaptor.UnitClasspathLoaderClassHook;
 
 import java.lang.reflect.Field;
@@ -21,6 +25,7 @@ public class UnionAdaptor extends org.eclipse.osgi.baseadaptor.BaseAdaptor imple
      * 日志.
      */
     private final Logger log = LoggerFactory.getLogger(getClass());
+
 
     /**
      * 默认构造器.
@@ -70,4 +75,19 @@ public class UnionAdaptor extends org.eclipse.osgi.baseadaptor.BaseAdaptor imple
             frameworkEvent.getThrowable().printStackTrace();
         }
     }
+    /**
+     * @Description: 获得状态实现处理器,方法返回状态实现器的包装类，用于重写一些
+     * 方法进行额外的处理.
+     *
+     * @author youg
+     * @since jdk1.8
+     */
+    public synchronized State getState() {
+       State state = super.getState();
+       //if(null == uniStateImplDecorator){
+       // UniStateImplDecorator uniStateImplDecorator = new UniStateImplDecorator((SystemState)  state);
+      // }
+       return state ;
+    }
+
 }

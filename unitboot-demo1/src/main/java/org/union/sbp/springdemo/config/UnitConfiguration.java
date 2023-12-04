@@ -15,13 +15,19 @@ import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 
 @EnableConfigurationProperties(DataSourceProperties.class)
 @ComponentScan(value = {"org.union.sbp.springdemo.controller.**"}, nameGenerator = DefaultBeanNameGenerator.class
-        ,basePackageClasses = {JdbcTemplateAutoConfiguration.class, MailSenderAutoConfiguration.class, DataSourceAutoConfiguration.class}
-        )
+        ,basePackageClasses = {
+        JdbcTemplateAutoConfiguration.class
+        , MailSenderAutoConfiguration.class
+        , DataSourceAutoConfiguration.class
+}
+)
+
 @MapperScan(basePackages = {"org.union.sbp.springdemo.dao"})
 @Import({MybatisAutoConfiguration.class,Knife4jConfiguration.class})
 @UnitConfigComponent
 public class UnitConfiguration  {
     public UnitConfiguration(){
+        org.h2.upgrade.DbUpgrade gg = null;
         System.out.println("初始化spring单元配置类v3");
     }
 }

@@ -5,7 +5,6 @@ Bundle-SymbolicName: app1
 Bundle-Version: 1.0.0
 Unit-Type: spring-unit
 Bundle-Activator: org.union.sbp.springdemo.SpringDemo1Activator
-Import-Package: org.apache.commons.logging; spring="true"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Spring-ConfigurationClass: org.union.sbp.springdemo.config.UnitConfiguration
 Bundle-ClassPath: .,
@@ -40,4 +39,4 @@ Bundle-ClassPath: .,
  lib/spring-tx-5.2.5.RELEASE.jar,
  lib/swagger-models-1.5.22.jar
 Bundle-Vendor: unitor
-Dynamicimport-Package: *
+DynamicImport-Package: *
