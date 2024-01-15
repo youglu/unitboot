@@ -189,6 +189,7 @@
     </dependencyManagement>
 
     <modules>
+        <module>unitboot-fragment</module>
         <module>unitboot-base</module>
         <module>unitboot-demo1</module>
         <module>unitboot-demo2</module>

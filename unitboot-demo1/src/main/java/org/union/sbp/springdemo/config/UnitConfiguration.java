@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
-import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
+// import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 
 
 @EnableConfigurationProperties(DataSourceProperties.class)
@@ -24,7 +24,7 @@ import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 
 @MapperScan(basePackages = {"org.union.sbp.springdemo.dao"})
 @Import({MybatisAutoConfiguration.class,Knife4jConfiguration.class})
-@UnitConfigComponent
+// @UnitConfigComponent
 public class UnitConfiguration  {
     public UnitConfiguration(){
         org.h2.upgrade.DbUpgrade gg = null;

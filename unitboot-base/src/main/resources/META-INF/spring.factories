@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.union.sbp.springbase.adaptor.config.SpringBaseConfiguration

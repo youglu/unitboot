@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.union.sbp.springweb.service.DemoService;
 
 @RestController
-@RequestMapping(path = "/demo2")
+@RequestMapping(path = "/web")
 public class HomeController {
 
     @Autowired

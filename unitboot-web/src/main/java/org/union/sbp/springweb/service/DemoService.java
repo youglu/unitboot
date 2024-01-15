@@ -8,7 +8,4 @@ public class DemoService {
         System.out.println("实始化 DemoService");
     }
 
-    public String findNames() {
-        return "a,b,c，D";
-    }
 }

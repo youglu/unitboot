@@ -1,6 +1,12 @@
 package org.union.sbp.springbase.adaptor;
 
+import org.eclipse.osgi.framework.internal.core.AbstractBundle;
+import org.eclipse.osgi.framework.internal.core.BundleFragment;
+import org.eclipse.osgi.framework.internal.core.BundleHost;
+import org.eclipse.osgi.framework.internal.core.Framework;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +20,6 @@ import org.union.sbp.springbase.adaptor.config.UnitWebConfig;
 import org.union.sbp.springbase.utils.SpringContextUtil;
 import org.union.sbp.springbase.utils.SpringUnitUtil;
 import org.union.sbp.springbase.utils.UnitLogger;
-import unitlauncher.utils.SpringBootUnitThreadLocal;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -158,5 +163,39 @@ public class SpringUnitBootAdaptor {
      */
     public static String getContextName(final Bundle springUnit) {
         return springUnit.getBundleId() + "|" + springUnit.getSymbolicName();
+    }
+
+    /**
+     * 让fragment支持多host
+     *
+     * @author youg
+     * @param startingBundle 正在启动的单元
+     */
+    public static void attachFragment(final Bundle startingBundle) {
+        // 尝试附加当前处理单元的fragment，因为在update时单元的fragment已置为空,这样在加载fragment中的类时就无法找到了.
+
+        if (null != startingBundle && startingBundle instanceof BundleHost) {
+            final BundleHost bundleHost = (BundleHost) startingBundle;
+            final BundleFragment[] fragments = bundleHost.getFragments();
+            if (null == fragments || fragments.length <= 0) {
+                final Framework framework = bundleHost.getFramework();
+                final BundleDescription[] bundleDescriptions = framework.getAdaptor().getState().getBundles();
+                for (BundleDescription bundleDescription : bundleDescriptions) {
+                    final AbstractBundle abstractBundle = (AbstractBundle) bundleDescription.getBundle();
+                    if (abstractBundle instanceof BundleFragment) {
+                        String hostBundleId = abstractBundle.getHeaders().get("Fragment-Host");
+                        for(String bundleId:hostBundleId.split(",")){
+                            if (bundleId.equals(startingBundle.getSymbolicName())) {
+                                try {
+                                    bundleHost.attachFragment((BundleFragment) abstractBundle);
+                                } catch (BundleException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

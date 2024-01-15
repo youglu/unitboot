@@ -13,11 +13,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.union.unitboot</groupId>
-            <artifactId>unitboot-base</artifactId>
-            <version>${unitboot.version}</version>
-        </dependency>
-        <dependency>
         <groupId>io.springfox</groupId>
         <artifactId>springfox-swagger2</artifactId>
         </dependency>
@@ -69,6 +64,12 @@
             <version>3.1.0</version>
             <!-- 只在编译和测试的时候用 -->
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.union.unitboot</groupId>
+            <artifactId>unitboot-fragment</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
     <build>
@@ -124,6 +125,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>

@@ -1,3 +1,6 @@
 安装到osgi
 install reference:file:D:/mywork/project/arch10/unitboot/unitboot-demo1/target/classes
 install reference:file:D:/mywork/project/arch10/unitboot/unitboot-demo1/target/unitboot-demo1-1.0.0.jar.original
+
+swagger knife4j访问地址
+http://ip:端口/上下文/doc.html

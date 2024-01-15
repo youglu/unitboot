@@ -16,7 +16,7 @@ import org.union.sbp.springbase.adaptor.web.UnitDispatcherServlet;
 /**
  * 主context的web配置
  */
-@Configuration
+// @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
     /**

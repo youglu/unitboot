@@ -16,9 +16,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * @author youg
  * @since JDK1.8
  */
-@Configuration
-@EnableSwagger2
-@EnableKnife4j
+//@Configuration
+//EnableSwagger2
+//@EnableKnife4j
 public class Knife4jConfiguration {
 
     public Knife4jConfiguration(){

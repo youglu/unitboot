@@ -39,4 +39,5 @@ Bundle-ClassPath: .,
  lib/spring-tx-5.2.5.RELEASE.jar,
  lib/swagger-models-1.5.22.jar
 Bundle-Vendor: unitor
+Import-Package: org.osgi.framework
 DynamicImport-Package: *

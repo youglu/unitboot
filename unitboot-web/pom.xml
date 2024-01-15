@@ -76,26 +76,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeArtifactIds>swagger-annotations,springfox-swagger-common,springfox-spring-webflux,springfox-swagger2,spring-plugin-core,spring-plugin-metadata,springfox-core,springfox-schema,springfox-spi,springfox-spring-web,springfox-spring-webmvc,springfox-swagger-ui,spring-boot,spring-cloud-context,spring-context,spring-core,spring-expression,spring-security-crypto,spring-web,spring-webmvc,spring-boot-starter,spring-aop,spring-beans,spring-boot-autoconfigure,spring-boot-starter-json,spring-boot-starter-logging,spring-boot-starter-tomcat,spring-boot-starter-validation,spring-boot-starter-web,spring-jcl</excludeArtifactIds>
-                            <excludeGroupIds>ch.qos.logback,org.hibernate.validator,com.fasterxml.jackson.core,com.fasterxml.jackson,org.apache.tomcat.embed,com.union.unitboot</excludeGroupIds>
-                            <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>groovy-maven-plugin</artifactId>
@@ -112,11 +92,10 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!--  打包时,添加信息  -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>

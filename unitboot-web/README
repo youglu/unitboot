@@ -1,3 +1,6 @@
 安装到osgi
 install reference:file:D:/mywork/project/arch10/unitboot/unitboot-demo1/target/classes
-install reference:file:D:/mywork/project/arch10/unitboot/unitboot-demo1/target/unitboot-demo1-1.0.0.jar.original
+install reference:file:../unit/spring/unitboot-web-1.0.0.jar
+
+sonar token
+ae877b3bb173d581222377cc7f544c4de354a6ca

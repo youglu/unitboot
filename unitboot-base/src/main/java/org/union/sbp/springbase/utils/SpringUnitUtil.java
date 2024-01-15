@@ -1,8 +1,12 @@
 package org.union.sbp.springbase.utils;
 
+import org.eclipse.osgi.framework.internal.core.AbstractBundle;
+import org.eclipse.osgi.framework.internal.core.BundleFragment;
+import org.eclipse.osgi.framework.internal.core.BundleHost;
+import org.eclipse.osgi.framework.internal.core.Framework;
+import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
@@ -13,7 +17,6 @@ import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 import org.union.sbp.springbase.adaptor.io.UnitResourceLoader;
 import org.union.sbp.springbase.constinfo.SpringUnit;
 
-import java.awt.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -152,4 +155,5 @@ public class SpringUnitUtil {
         }
         return unitBundle;
     }
+   
 }

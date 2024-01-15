@@ -3,6 +3,6 @@ springfox:
     swagger-ui:
       base-url: /
 server:
-  port: 9090
+  port: 9093
   servlet:
-    contextPath: /app2
+    contextPath: /

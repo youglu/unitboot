@@ -291,7 +291,7 @@ public class BundleFragment extends AbstractBundle {
 	 * Adds a host bundle for this fragment.
 	 * @param host the BundleHost to add to the set of host bundles
 	 */
-	boolean addHost(BundleHost host) {
+	public boolean addHost(BundleHost host) {
 		if (host == null)
 			return false;
 		try {

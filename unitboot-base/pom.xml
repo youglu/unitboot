@@ -56,21 +56,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.eclipse.osgi</groupId>
+            <groupId>org.eclipse</groupId>
             <artifactId>org.eclipse.osgi</artifactId>
-            <version>3.9.1.v20130814-1242</version>
+            <version>3.9.1-v20130814-1242</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.union.unitboot</groupId>
-            <artifactId>unitboot-launcher</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
-        </dependency>
+
 
     </dependencies>
     <build>
@@ -95,6 +90,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <manifestFile>src/main/resources/META-INF/MANIFEST.MF</manifestFile>
@@ -117,7 +113,7 @@
                 </configuration>
             </plugin>
 
-
+            <!--单独指定依赖打包插件，用于排除特定的JAR包，因为父包中的排除不适作当前包，故为之-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -129,7 +125,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludeArtifactIds>org.eclipse.osgi</excludeArtifactIds>
+                            <excludeArtifactIds>org.osgi.core,org.eclipse.osgi</excludeArtifactIds>
                             <excludeGroupIds>com.union.unitboot</excludeGroupIds>
                             <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
                         </configuration>

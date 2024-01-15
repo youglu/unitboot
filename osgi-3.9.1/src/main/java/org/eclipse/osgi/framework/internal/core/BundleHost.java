@@ -608,7 +608,7 @@ public class BundleHost extends AbstractBundle {
 	 * return true if the fragment successfully attached; false if the fragment
 	 * could not be logically inserted at the end of the fragment chain.
 	 */
-	protected void attachFragment(BundleFragment fragment) throws BundleException {
+	public void attachFragment(BundleFragment fragment) throws BundleException {
 		// do not force the creation of the bundle loader here
 		BundleLoader loader = getLoaderProxy().getBasicBundleLoader();
 		// If the Host ClassLoader exists then we must attach
