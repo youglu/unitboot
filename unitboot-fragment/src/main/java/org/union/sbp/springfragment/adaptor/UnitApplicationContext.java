@@ -27,7 +27,7 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
     @Override
     protected void onRefresh() { 
         // 获得WEB单元中提供的ServletContext
-        final ServletContext servletContext = null;//fetchServletContextFromOSGIService();
+        final ServletContext servletContext = fetchServletContextFromOSGIService();
         if(null != servletContext){
             final int STARTING_PREP = 3;
             changeWebContextState(servletContext, STARTING_PREP);
@@ -40,7 +40,6 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
             final int STARTED = 5;
             changeWebContextState(servletContext,STARTED);
         }
-
     }
 
     private ServletContext fetchServletContextFromOSGIService(){
@@ -66,7 +65,6 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
             Object standardContext = ReflectUtil.getFieldValue("context",servletContext);
             Object webServerContext = ReflectUtil.getFieldValue("context",standardContext);
             if(null != webServerContext) {
-
                 Class lifecycleEnumClass = webServerContext.getClass().getClassLoader().loadClass("org.apache.catalina.LifecycleState");
                 Object[] lifecycleEnums = lifecycleEnumClass.getEnumConstants();
                 Object startedLifecycleState = lifecycleEnums[stateIndex];

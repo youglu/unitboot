@@ -1,25 +1,15 @@
 package org.union.sbp.springweb.config;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.union.sbp.springweb.SprinpWebApplication;
-import org.union.sbp.springweb.controller.HomeController;
-
-import javax.servlet.ServletContext;
-import java.util.Properties;
 
 /**
  * web单元配置类
  * @author youg
  */
 @Configuration
-@ComponentScan(basePackageClasses = {SprinpWebApplication.class})
 public class UnitConfiguration implements ApplicationContextAware {
 
 
@@ -40,9 +30,9 @@ public class UnitConfiguration implements ApplicationContextAware {
         return springContext;
     }
 
-    @Bean
-    public HomeController getHomeController(){
-        return new HomeController();
-    }
+   // @Bean
+    //public HomeController getHomeController(){
+      //  return new HomeController();
+    //}
 
 }

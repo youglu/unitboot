@@ -59,9 +59,10 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
            // System.out.println("preFindClass:"+className);
            // resolveBundleMappingDifBundle(bundleClassLoader);
             // 部分包走单元自已的加载器
-            if(true || className.equals("javax.servlet.GenericFilter")
+            if(className.equals("javax.servlet.GenericFilter")
                     || className.equals("javax.servlet.http.PushBuilder")
                     || className.equals("javax.servlet.http.HttpServletMapping")
+                    || className.equals("javax.servlet.http.MappingMatch")
 
 
             ){
@@ -83,6 +84,9 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
                     || className.equals("javax.servlet.Registration$Dynamic")
                     || className.equals("javax.servlet.FilterRegistration$Dynamic")
                     || className.equals(FilterRegistration.class.getName())
+                    || className.equals(DispatcherType.class.getName())
+                    || className.equals(RequestDispatcher.class.getName())
+                    || className.startsWith("javax.servlet")
                 ){
                 return this.getClass().getClassLoader().loadClass(className);
             }
@@ -101,22 +105,7 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
         @Override
         public Class<?> postFindClass(String className, BundleClassLoader bundleClassLoader, BundleData bundleData) throws ClassNotFoundException {
 
-            if(null == className){
-                return null;
-            } 
-            boolean canProxy = false;
-            for(String clazzName:proxyClassNames){
-                if(className.startsWith(clazzName)){
-                    canProxy = true;
-                    break;
-                }
-            }
-            if(!canProxy){
-                return null;
-            }
-            // 尝试全局加载
-            Class<?> clazz = globalClassLoader.findLocalClass(className,bundleData.getBundle());
-            return clazz;
+            return null;
         }
 
         @Override
@@ -127,19 +116,7 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
 
         @Override
         public URL postFindResource(String resourceName, BundleClassLoader bundleClassLoader, BundleData bundleData) throws FileNotFoundException {
-           // System.out.println("postFindResource:"+resourceName);
-            boolean canProxy = false;
-            for(String proxyResourceName:proxyResourceNames){
-                if(resourceName.indexOf(proxyResourceName) != -1){
-                    canProxy = true;
-                    break;
-                }
-            }
-            if(!canProxy){
-                return null;
-            }
-           // System.out.println("全局查询资源:"+resourceName);
-            return globalResourceLoader.findResource(resourceName,bundleData.getBundle());
+          return null;
         }
 
         @Override
@@ -172,20 +149,20 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
      * @param bundleClassLoader
      */
     private void resolveBundleMappingDifBundle(BundleClassLoader bundleClassLoader){
-            try {
-                BundleLoader bundleLoader = (BundleLoader) bundleClassLoader.getDelegate();
-                BundleLoaderProxy proxy =  bundleLoader.getLoaderProxy();
-                BundleDescription proxyBundleDescription = proxy.getBundleDescription();
-                BundleDescription currentBundleDescription = ((BundleHost) bundleClassLoader.getBundle()).getBundleDescription();
-                if(proxyBundleDescription != currentBundleDescription){
-                    Field bundleDescriptionField = BundleLoaderProxy.class.getDeclaredField("description");
-                    Boolean accessState = bundleDescriptionField.isAccessible();
-                    bundleDescriptionField.setAccessible(true);
-                    bundleDescriptionField.set(proxy,currentBundleDescription);
-                    bundleDescriptionField.setAccessible(accessState);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+        try {
+            BundleLoader bundleLoader = (BundleLoader) bundleClassLoader.getDelegate();
+            BundleLoaderProxy proxy =  bundleLoader.getLoaderProxy();
+            BundleDescription proxyBundleDescription = proxy.getBundleDescription();
+            BundleDescription currentBundleDescription = ((BundleHost) bundleClassLoader.getBundle()).getBundleDescription();
+            if(proxyBundleDescription != currentBundleDescription){
+                Field bundleDescriptionField = BundleLoaderProxy.class.getDeclaredField("description");
+                Boolean accessState = bundleDescriptionField.isAccessible();
+                bundleDescriptionField.setAccessible(true);
+                bundleDescriptionField.set(proxy,currentBundleDescription);
+                bundleDescriptionField.setAccessible(accessState);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+}

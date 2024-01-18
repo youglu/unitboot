@@ -27,7 +27,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="unitboot-base" />
+    <orderEntry type="module" module-name="unitboot-fragment" />
     <orderEntry type="library" name="Maven: org.springframework.cloud:spring-cloud-context:2.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.security:spring-security-crypto:5.2.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.2.6.RELEASE" level="project" />
@@ -92,7 +92,7 @@
     <orderEntry type="library" name="Maven: io.swagger:swagger-models:1.5.22" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-bean-validators:2.10.5" level="project" />
     <orderEntry type="library" name="Maven: com.github.xiaoymin:knife4j-spring-ui:2.0.9" level="project" />
-    <orderEntry type="module" module-name="org.eclipse.osgi (1) (org.eclipse)" />
+    <orderEntry type="library" name="Maven: org.eclipse.osgi:org.eclipse.osgi:3.9.1.v20130814-1242" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-swagger2:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-schema:3.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-swagger-common:3.0.0" level="project" />

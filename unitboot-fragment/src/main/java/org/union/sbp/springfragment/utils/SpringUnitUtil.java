@@ -1,6 +1,7 @@
 package org.union.sbp.springfragment.utils;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Version;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -113,5 +114,19 @@ public class SpringUnitUtil {
             throw new RuntimeException("无法从子单元ApplicationContext获得有效的单元");
         }
         return unitBundle;
+    }
+    /**
+     * 初始化OSGI环境下的springboot
+     *
+     * @throws Exception 初始化异常
+     */
+    public static void initSpringBoot(final BundleContext context) throws Exception {
+        // 添加OSGI的FileLocator到Spring环境.
+        IoUtil2.addOSGIScanPathResolve();
+        //设置日志路径
+        IoUtil2.getUnitUrl(context.getBundle(), "logback-spring.xml");
+        System.setProperty("logging.config", "classpath:logback-spring.xml");
+        // 添除在equinox启动时，Framework设置的URLStreamHandlerFactory，因为springboot在嵌入tomcat时也要调置，但此属性设计只能设置一次，所以先清除。
+        SpringStreamHanderFactoryUtil.clearUrlStreamHandlerFactory();
     }
 }

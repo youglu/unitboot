@@ -7,6 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.union.sbp.springfragment.utils.SpringUnitUtil;
 import org.union.sbp.springweb.config.UnitConfiguration;
 import org.union.sbp.springweb.utils.SpringStreamHanderFactoryUtil;
 
@@ -19,6 +20,7 @@ public class SpringWebActivator implements BundleActivator {
 	public void start(BundleContext context) {
 		try {
 			Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
+			SpringUnitUtil.initSpringBoot(context);
 			SpringStreamHanderFactoryUtil.clearUrlStreamHandlerFactory();
 			SprinpWebApplication.main(new String[]{});
 			// 重置回URLStreamHandlerFactory为equinox的版本.
