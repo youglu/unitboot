@@ -10,12 +10,13 @@ import org.union.sbp.springweb.service.DemoService;
 @RequestMapping(path = "/web")
 public class HomeController {
 
+    public HomeController(){
+        System.out.println("初始化HomeController...");
+    }
+
     @Autowired
     private DemoService demoService;
 
-    public HomeController(){
-        System.out.println("实例化HomeController,demoService");
-    }
     @RequestMapping(value = "/home2", method = RequestMethod.GET)
     public String home() {
         return "Hello2，Spring Boot:"+demoService;

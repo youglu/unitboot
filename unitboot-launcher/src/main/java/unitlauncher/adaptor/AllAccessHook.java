@@ -4,28 +4,18 @@ import org.eclipse.osgi.baseadaptor.BaseAdaptor;
 import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
 import org.eclipse.osgi.framework.adaptor.BundleData;
 import org.eclipse.osgi.framework.adaptor.ClassLoaderDelegateHook;
-import org.eclipse.osgi.framework.internal.core.AbstractBundle;
-import org.eclipse.osgi.framework.internal.core.BundleFragment;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.framework.internal.core.Framework;
 import org.eclipse.osgi.internal.loader.BundleLoader;
 import org.eclipse.osgi.internal.loader.BundleLoaderProxy;
-import org.eclipse.osgi.internal.module.ResolverBundle;
-import org.eclipse.osgi.internal.module.ResolverImpl;
 import org.eclipse.osgi.service.resolver.BundleDescription;
-import org.osgi.framework.Bundle;
 import unitlauncher.utils.GlobalClassLoader;
 import unitlauncher.utils.GlobalResourceLoader;
-import unitlauncher.utils.SpringBootUnitThreadLocal;
 
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
+import javax.servlet.*;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * 自定义默认采用JVM类加载器加载指名类名的类
@@ -68,19 +58,32 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
         public Class<?> preFindClass(String className, BundleClassLoader bundleClassLoader, BundleData bundleData) throws ClassNotFoundException {
            // System.out.println("preFindClass:"+className);
            // resolveBundleMappingDifBundle(bundleClassLoader);
-            if((
-                    className.equals("javax.servlet.ServletContext")
-            || className.equals("javax.servlet.Servlet")
+            // 部分包走单元自已的加载器
+            if(true || className.equals("javax.servlet.GenericFilter")
+                    || className.equals("javax.servlet.http.PushBuilder")
+                    || className.equals("javax.servlet.http.HttpServletMapping")
+
+
+            ){
+                return null;
+            }else
+                // 公共包走全局局加载
+            if(className.equals("javax.servlet.ServletContext")
+                    || className.equals("javax.servlet.Servlet")
                     || className.equals("javax.servlet.ServletConfig")
                     || className.equals("javax.servlet.ServletRequest")
                     || className.equals("javax.servlet.ServletResponse")
                     || className.equals("javax.servlet.Filter")
                     || className.equals(FilterConfig.class.getName())
                     || className.equals(FilterChain.class.getName())
-                    || className.startsWith("javax.servlet")
-            ) && (!className.equals("javax.servlet.GenericFilter"))
-
-            ){
+                    || className.equals(ServletRegistration.class.getName())
+                    || className.equals(ServletRegistration.Dynamic.class.getName())
+                    || className.equals(Registration.class.getName())
+                    || className.equals(Registration.Dynamic.class.getName())
+                    || className.equals("javax.servlet.Registration$Dynamic")
+                    || className.equals("javax.servlet.FilterRegistration$Dynamic")
+                    || className.equals(FilterRegistration.class.getName())
+                ){
                 return this.getClass().getClassLoader().loadClass(className);
             }
             return null;

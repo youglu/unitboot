@@ -15,8 +15,11 @@ import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebSe
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
+import org.union.sbp.springfragment.utils.ReflectUtil;
 
 import javax.servlet.ServletContext;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class UnitApplicationContext extends AnnotationConfigServletWebServerApplicationContext {
@@ -24,11 +27,20 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
     @Override
     protected void onRefresh() { 
         // 获得WEB单元中提供的ServletContext
-        final ServletContext servletContext = fetchServletContextFromOSGIService();
+        final ServletContext servletContext = null;//fetchServletContextFromOSGIService();
         if(null != servletContext){
+            final int STARTING_PREP = 3;
+            changeWebContextState(servletContext, STARTING_PREP);
             setServletContext(servletContext);
         }
+
         super.onRefresh();
+
+        if(null != servletContext) {
+            final int STARTED = 5;
+            changeWebContextState(servletContext,STARTED);
+        }
+
     }
 
     private ServletContext fetchServletContextFromOSGIService(){
@@ -37,22 +49,32 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
         ServiceReference serviceReference = bundleContext.getServiceReference(ServletContext.class.getName());
 
         if(null != serviceReference){
-           // ApplicationContextFacade servletContext = new ApplicationContextFacade(new ApplicationContext(new StandardContext()));
-            //Object servletContextObj = bundleContext.getService(serviceReference);
-            //BeanUtils.copyProperties(servletContextObj,applicationContextFacade);
-            // 更改aplication的状态
-
-
             ServletContext servletContext = (ServletContext) bundleContext.getService(serviceReference);
-            Method method = ReflectionUtils.findMethod(servletContext.getClass(),"setState");
-
-            boolean isaccessible = method.isAccessible();
-            method.setAccessible(true);
-            ReflectionUtils.invokeMethod(method,new Object[]{LifecycleState.INITIALIZED});
-            method.setAccessible(isaccessible);
             return servletContext;
         }
         return null;
+    }
+
+    /**
+     * 更改tomcat容器状态,参考 org.apache.catalina.LifecycleState类中的枚举位置.
+     *
+     * @param servletContext
+     * @param stateIndex
+     */
+    private void changeWebContextState(final ServletContext servletContext, int stateIndex){
+        try {
+            Object standardContext = ReflectUtil.getFieldValue("context",servletContext);
+            Object webServerContext = ReflectUtil.getFieldValue("context",standardContext);
+            if(null != webServerContext) {
+                Class lifecycleEnumClass = webServerContext.getClass().getClassLoader().loadClass("org.apache.catalina.LifecycleState");
+                Object[] lifecycleEnums = lifecycleEnumClass.getEnumConstants();
+                Object startedLifecycleState = lifecycleEnums[stateIndex];
+                ReflectUtil.setFieldValue("state",webServerContext,startedLifecycleState);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
