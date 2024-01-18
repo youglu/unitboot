@@ -20,7 +20,9 @@ import java.util.Map;
  * 根据url中的子单元名称转发到相应的子单元中的dispatcherservlet中处理。
  */
 public class ControllerAdaptor {
+
     private final static Logger log = LoggerFactory.getLogger(ControllerAdaptor.class);
+
     /**
      * swagger controller开头的包前缀，子单元的swagger的controller不需要加到主context中。
      */
