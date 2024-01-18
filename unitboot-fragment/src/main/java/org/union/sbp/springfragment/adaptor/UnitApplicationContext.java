@@ -66,6 +66,7 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
             Object standardContext = ReflectUtil.getFieldValue("context",servletContext);
             Object webServerContext = ReflectUtil.getFieldValue("context",standardContext);
             if(null != webServerContext) {
+
                 Class lifecycleEnumClass = webServerContext.getClass().getClassLoader().loadClass("org.apache.catalina.LifecycleState");
                 Object[] lifecycleEnums = lifecycleEnumClass.getEnumConstants();
                 Object startedLifecycleState = lifecycleEnums[stateIndex];
