@@ -12,6 +12,7 @@ import unitlauncher.utils.GlobalClassLoader;
 import unitlauncher.utils.GlobalResourceLoader;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -61,9 +62,7 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
             // 部分包走单元自已的加载器
             if(className.equals("javax.servlet.GenericFilter")
                     || className.equals("javax.servlet.http.PushBuilder")
-                    || className.equals("javax.servlet.http.HttpServletMapping")
                     || className.equals("javax.servlet.http.MappingMatch")
-
 
             ){
                 return null;

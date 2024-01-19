@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.union.sbp.springfragment.config.SpringBaseConfiguration
+org.union.sbp.springfragment.config.SpringBaseConfiguration,\
+org.union.sbp.springfragment.config.UnitWebConfig

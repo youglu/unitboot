@@ -10,11 +10,12 @@ import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.union.sbp.springfragment.config.UnitBeanDefinConfiguration;
 // import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
 
 
 @EnableConfigurationProperties(DataSourceProperties.class)
-@ComponentScan(value = {"org.union.sbp.springdemo.controller.**"}, nameGenerator = DefaultBeanNameGenerator.class
+@ComponentScan(value = {"org.union.sbp.springdemo.**"}, nameGenerator = UnitBeanDefinConfiguration.class
         ,basePackageClasses = {
         JdbcTemplateAutoConfiguration.class
         , MailSenderAutoConfiguration.class

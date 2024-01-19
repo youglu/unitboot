@@ -11,6 +11,8 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.BeanDefinitionStoreException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.util.ClassUtils;
@@ -76,4 +78,9 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
 
     }
 
+    @Override
+    public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws BeanDefinitionStoreException {
+        System.out.println("bbbb:"+beanName);
+        super.registerBeanDefinition(beanName, beanDefinition);
+    }
 }

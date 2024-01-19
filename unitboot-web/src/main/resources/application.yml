@@ -6,3 +6,6 @@ server:
   port: 9093
   servlet:
     contextPath: /
+spring:
+  main:
+    allow-bean-definition-overriding: true
