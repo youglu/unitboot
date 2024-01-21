@@ -2,13 +2,13 @@ package org.union.sbp.springdemo;
 
 import org.osgi.framework.BundleContext;
 import org.union.sbp.springfragment.utils.IoUtil2;
-import org.union.sbp.springfragment.utils.SpringContextUtil;
 import org.union.sbp.springfragment.utils.SpringStreamHanderFactoryUtil;
 
 public class SpringDemo1Activator implements org.osgi.framework.BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         initSpringBoot(context);
+        System.out.println("111111111111111");
         System.out.println("spring demo初始化完毕");
     }
 

@@ -1,28 +1,15 @@
 package org.union.sbp.springbase.utils;
 
-import org.eclipse.osgi.framework.internal.core.AbstractBundle;
-import org.eclipse.osgi.framework.internal.core.BundleFragment;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.framework.internal.core.Framework;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.Version;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.util.StringUtils;
-import org.union.sbp.springbase.adaptor.annoatation.UnitConfigComponent;
-import org.union.sbp.springbase.adaptor.io.UnitResourceLoader;
 import org.union.sbp.springbase.constinfo.SpringUnit;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * spring单元处理工具类
@@ -31,44 +18,6 @@ import java.util.Set;
  */
 public class SpringUnitUtil {
 
-    /**
-     * 获得Spring单元默认的配置类名,完整的类名.
-     * @param bundle
-     * @return
-     */
-    public static List<Class> findDefaultConfigurationClass(final Bundle bundle){
-        try {
-            //保存单元初始配置类
-            final List<Class> unitConfigClassList = new ArrayList<Class>();
-            //尝试从单元的classpath获得注解为UnitConfiguration的类
-            final Class activatorClass = getBundleActivatorClass(bundle);
-            final ClassPathScanningCandidateComponentProvider scanner=new ClassPathScanningCandidateComponentProvider(false);
-            scanner.addIncludeFilter(new AnnotationTypeFilter(UnitConfigComponent.class));
-            scanner.setResourceLoader(new UnitResourceLoader(activatorClass.getClassLoader()));
-            final Set<BeanDefinition> unitConfigClasseDefinitions = scanner.findCandidateComponents(activatorClass.getPackage().getName()+"");
-            if(null != unitConfigClasseDefinitions && unitConfigClasseDefinitions.size()>0){
-                unitConfigClasseDefinitions.forEach((beanDefinition)->{
-                    try {
-                        unitConfigClassList.add(bundle.loadClass(beanDefinition.getBeanClassName()));
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                });
-            }
-            //如果没有找到，则尝试从单元元文件获得配置类
-            final String defaultSpringConfigurationClassName = bundle.getHeaders().get("Spring-ConfigurationClass");
-            if(unitConfigClasseDefinitions.isEmpty() && !StringUtils.isEmpty(defaultSpringConfigurationClassName)) {
-                String[] configClassNames = defaultSpringConfigurationClassName.split(",");
-                for(String configClassName:configClassNames) {
-                    unitConfigClassList.add(bundle.loadClass(configClassName));
-                }
-            }
-            return unitConfigClassList;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
     /**
      * 根据单元标识获得单元实例.
      * @return Bundle

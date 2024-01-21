@@ -65,6 +65,11 @@
             <artifactId>commons-lang3</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.30</version>
+        </dependency>
 
 
     </dependencies>
@@ -112,27 +117,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-            <!--单独指定依赖打包插件，用于排除特定的JAR包，因为父包中的排除不适作当前包，故为之-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeArtifactIds>org.osgi.core,org.eclipse.osgi</excludeArtifactIds>
-                            <excludeGroupIds>com.union.unitboot</excludeGroupIds>
-                            <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>groovy-maven-plugin</artifactId>

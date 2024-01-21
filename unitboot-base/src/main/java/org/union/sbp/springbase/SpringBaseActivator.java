@@ -2,15 +2,8 @@ package org.union.sbp.springbase;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.server.WebServer;
-import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.union.sbp.springbase.adaptor.SpringUnitBootAdaptor;
 import org.union.sbp.springbase.listener.UnitBootListener;
-import org.union.sbp.springbase.utils.IoUtil;
-import org.union.sbp.springbase.utils.SpringContextUtil;
-import org.union.sbp.springbase.utils.SpringStreamHanderFactoryUtil;
 
 /**
  * spring基础单元启动器.
@@ -27,9 +20,9 @@ public class SpringBaseActivator implements BundleActivator {
      * @throws Exception 启动异常
      */
     public void start(BundleContext context) {
+        SpringUnitBootAdaptor sdf = new SpringUnitBootAdaptor();
+        System.out.println(org.eclipse.osgi.service.resolver.State.class);
         try {
-            // Class.forName("org.hibernate.validator.internal.engine.ConfigurationImpl");
-            // initSpringBoot();
             // 添加单元监听器，用于自动配置spring单元.
             context.addBundleListener(new UnitBootListener());
             System.out.println("spring基础环境初始化完毕");
