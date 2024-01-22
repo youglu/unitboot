@@ -2,59 +2,56 @@ package org.union.sbp.springfragment.config;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletRegistrationBean;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.union.sbp.springfragment.utils.SpringUnitUtil;
 
 import javax.servlet.MultipartConfigElement;
 
+/**
+ * 配置类
+ */
 @Configuration
 public class UnitBeanDefineRegistration {
 
-        //@Bean
-        //@Primary
-        public DispatcherServlet unitDispatcherServlet() {
-            DispatcherServlet dispatcherServlet = new DispatcherServlet();
-            return dispatcherServlet;
-        }
-
-       // @Bean
-        public ServletRegistrationBean<DispatcherServlet> dispatcherServletRegistration() {
-            ServletRegistrationBean<DispatcherServlet> registration = new ServletRegistrationBean<>(
-                    unitDispatcherServlet(), "/");
-            registration.setName("myDispatcherServlet");
-            return registration;
-        }
     /**
-     * 提供单元的RequestMappingHandlerMapping,用于映射单元内的controler.
-     * 已知的swagger会用到，而不只是取到主context的.
+     * 子单元的DispatcherServlet bean，用于提供在更新单元后的DispatcherServlet刷新.
+     * @param httpProperties
+     * @param webMvcProperties
      * @return
      */
-   // @Bean
-    public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-        RequestMappingHandlerMapping requestMappingHandlerMapping = new RequestMappingHandlerMapping();
-        requestMappingHandlerMapping.setOrder(0);
-        return requestMappingHandlerMapping;
+    @Bean(name = {"dispatcherServlet"})
+    public DispatcherServlet dispatcherServlet(HttpProperties httpProperties, WebMvcProperties webMvcProperties) {
+        DispatcherServlet dispatcherServlet = new DispatcherServlet();
+        dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());
+        dispatcherServlet.setDispatchTraceRequest(webMvcProperties.isDispatchTraceRequest());
+        dispatcherServlet.setThrowExceptionIfNoHandlerFound(webMvcProperties.isThrowExceptionIfNoHandlerFound());
+        dispatcherServlet.setPublishEvents(webMvcProperties.isPublishRequestHandledEvents());
+        dispatcherServlet.setEnableLoggingRequestDetails(httpProperties.isLogRequestDetails());
+        return dispatcherServlet;
     }
-
-    //@Bean
-   // public DispatcherServletPath dispatcherServletPath(){
-        //DispatcherServletPath dispatcherServletPath = new (dispatcherServletRegistration(),"/");
-        //return dispatcherServletPath
-   // }
-
-
+    /**
+     * 覆盖dispatcherServlet的注册处理类,用于对注册进行重命名名，解决多个springboot单元共享同一个web容器无法注册dpatcherServlet到web容器问题.
+     *
+     * @param dispatcherServlet dispatcherServlet
+     * @param webMvcProperties webMvcProperties
+     * @param multipartConfig multipartConfig
+     * @return DispatcherServletRegistrationBean
+     */
     @ConditionalOnBean(value = DispatcherServlet.class)
     @Bean
     public DispatcherServletRegistrationBean dispatcherServletRegistration(DispatcherServlet dispatcherServlet,
                                                                            WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig) {
+        final String registPath = dispatcherServlet.getEnvironment().getProperty("server.servlet.context-path");
+        // webMvcProperties.getServlet().getPath()
         DispatcherServletRegistrationBean registration = new DispatcherServletRegistrationBean(dispatcherServlet,
-                webMvcProperties.getServlet().getPath());
-        registration.setName("myDispatcherServlet");
+                registPath);
+        // 重命名dispatcherServlet的注册名，解决多个springboot单元共享同一个web容器无法注册dpatcherServlet到web容器问题.
+        registration.setName(SpringUnitUtil.getDispatcherServletRegistName());
         registration.setLoadOnStartup(webMvcProperties.getServlet().getLoadOnStartup());
         multipartConfig.ifAvailable(registration::setMultipartConfig);
         return registration;

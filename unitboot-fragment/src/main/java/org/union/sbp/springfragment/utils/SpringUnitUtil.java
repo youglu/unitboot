@@ -2,6 +2,7 @@ package org.union.sbp.springfragment.utils;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.Version;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since JDK1.8
  */
 public class SpringUnitUtil {
+
 
     /**
      * 获得Spring单元默认的配置类名,完整的类名.
@@ -128,5 +130,18 @@ public class SpringUnitUtil {
         System.setProperty("logging.config", "classpath:logback-spring.xml");
         // 添除在equinox启动时，Framework设置的URLStreamHandlerFactory，因为springboot在嵌入tomcat时也要调置，但此属性设计只能设置一次，所以先清除。
         SpringStreamHanderFactoryUtil.clearUrlStreamHandlerFactory();
+    }
+    /**
+     * 根据当前的class类获得对应的单元，从中提取dispatcherServlet的注册名称.
+     *
+     * @return String
+     */
+    public static String getDispatcherServletRegistName() {
+        Bundle bundle = FrameworkUtil.getBundle(SpringUnitUtil.class);
+        if(null != bundle){
+            String synblicName_unitId = bundle.getSymbolicName()+"|"+bundle.getBundleId();
+            return synblicName_unitId;
+        }
+        return SpringUnit.DEFAULT_DISPATCHERSERVLET_NAME;
     }
 }
