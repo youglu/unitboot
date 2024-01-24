@@ -61,8 +61,8 @@ public class AllAccessHook implements ClassLoaderDelegateHook {
            // resolveBundleMappingDifBundle(bundleClassLoader);
             // 部分包走单元自已的加载器
             if(className.equals("javax.servlet.GenericFilter")
-                    || className.equals("javax.servlet.http.PushBuilder")
-                    || className.equals("javax.servlet.http.MappingMatch")
+                   // || className.equals("javax.servlet.http.PushBuilder")
+                    //|| className.equals("javax.servlet.http.MappingMatch")
 
             ){
                 return null;

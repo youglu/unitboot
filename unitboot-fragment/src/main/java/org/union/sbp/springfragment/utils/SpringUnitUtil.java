@@ -1,13 +1,13 @@
 package org.union.sbp.springfragment.utils;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.Version;
+import org.osgi.framework.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.StringUtils;
-import org.union.sbp.springfragment.constinfo.SpringUnit;
+import org.union.sbp.springfragment.constinfo.SpringUnitConst;
 
+import javax.servlet.ServletContext;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,7 +20,8 @@ import java.util.List;
  */
 public class SpringUnitUtil {
 
-
+    /**日志*/
+    protected final static Logger logger = LoggerFactory.getLogger(SpringUnitUtil.class);
     /**
      * 获得Spring单元默认的配置类名,完整的类名.
      * @param bundle
@@ -60,7 +61,7 @@ public class SpringUnitUtil {
      * @return
      */
     public static ClassLoader getBundleClassLoader(final Bundle unitBundle){
-        String activatorClassName = unitBundle.getHeaders().get(SpringUnit.UNIT_ACTIVATOR_CLASS_NAME);
+        String activatorClassName = unitBundle.getHeaders().get(SpringUnitConst.UNIT_ACTIVATOR_CLASS_NAME);
         try {
            return unitBundle.loadClass(activatorClassName).getClassLoader();
         } catch (ClassNotFoundException e) {
@@ -76,7 +77,7 @@ public class SpringUnitUtil {
      * @return
      */
     public static <T> Class<T> getBundleActivatorClass(final Bundle unitBundle){
-        String activatorClassName = unitBundle.getHeaders().get(SpringUnit.UNIT_ACTIVATOR_CLASS_NAME);
+        String activatorClassName = unitBundle.getHeaders().get(SpringUnitConst.UNIT_ACTIVATOR_CLASS_NAME);
         try {
             if(StringUtils.isEmpty(activatorClassName)){
                 return null;
@@ -142,6 +143,62 @@ public class SpringUnitUtil {
             String synblicName_unitId = bundle.getSymbolicName()+"|"+bundle.getBundleId();
             return synblicName_unitId;
         }
-        return SpringUnit.DEFAULT_DISPATCHERSERVLET_NAME;
+        return SpringUnitConst.DEFAULT_DISPATCHERSERVLET_NAME;
+    }
+    /**
+     * 根据当前的class类获得对应的单元，从中提取dispatcherServlet的注册名称.
+     *
+     * @return String
+     */
+    public static String getUnitContextPath() {
+        return getUnitContextPath(SpringUnitUtil.class);
+    }
+    /**
+     * 根据当前的class类获得对应的单元，从中提取dispatcherServlet的注册名称.
+     *
+     * @param clasz 从该class的所属以cloassloader获得单元实例
+     * @return String
+     */
+    public static String getUnitContextPath(final Class clasz) {
+        final Bundle unit = FrameworkUtil.getBundle(clasz);
+        if(null != unit){
+            String springContext = System.getProperty(unit.getBundleId()+"."+ SpringUnitConst.CONTEXT_PATH);
+            return springContext;
+        }
+        return "/";
+    }
+
+    /**
+     * 获得注册共享的servletContext实例
+     * @return ServletContext
+     */
+    public static ServletContext fetchServletContextFromOSGIService(){
+        final Bundle bundle = FrameworkUtil.getBundle(SpringUnitConst.class);
+        final BundleContext bundleContext = bundle.getBundleContext();
+        final ServiceReference serviceReference = bundleContext.getServiceReference(ServletContext.class.getName());
+
+        if(null != serviceReference){
+            ServletContext servletContext = (ServletContext) bundleContext.getService(serviceReference);
+            return servletContext;
+        }
+
+        return null;
+    }
+
+    /**
+     * spring单元在spring applicationContext实例化后调用。
+     *
+     * @param context
+     */
+    public static void afterSpringContextInstance(BundleContext context) {
+        ApplicationContext applicationContext = SpringContextUtil.getApplicationContext();
+        if(null == applicationContext){
+            logger.warn("spring applicationContext实例为空，无法注册到osgi环境，这将导致相关功能不可用！要");
+            return;
+        }
+        // 设置web上下文到单元的配置中
+        Bundle unit = context.getBundle();
+        System.setProperty(unit.getBundleId()+"."+ SpringUnitConst.CONTEXT_PATH, applicationContext.getEnvironment().getProperty(SpringUnitConst.CONTEXT_PATH));
+        UnitUtil.registService(applicationContext, ApplicationContext.class.getName());
     }
 }

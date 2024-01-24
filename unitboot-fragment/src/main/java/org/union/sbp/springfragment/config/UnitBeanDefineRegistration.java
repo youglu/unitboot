@@ -1,5 +1,7 @@
 package org.union.sbp.springfragment.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.http.HttpProperties;
@@ -8,15 +10,26 @@ import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.union.sbp.springfragment.adaptor.UnitApplicationContext;
+import org.union.sbp.springfragment.adaptor.UnitDispatcherServlet;
+import org.union.sbp.springfragment.adaptor.UnitServletConfig;
+import org.union.sbp.springfragment.constinfo.SpringUnitConst;
 import org.union.sbp.springfragment.utils.SpringUnitUtil;
+import org.union.sbp.springfragment.utils.UnitUtil;
 
 import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * 配置类
  */
 @Configuration
 public class UnitBeanDefineRegistration {
+
+    /**日志*/
+    protected final Logger logger = LoggerFactory.getLogger(UnitBeanDefineRegistration.class);
 
     /**
      * 子单元的DispatcherServlet bean，用于提供在更新单元后的DispatcherServlet刷新.
@@ -26,12 +39,14 @@ public class UnitBeanDefineRegistration {
      */
     @Bean(name = {"dispatcherServlet"})
     public DispatcherServlet dispatcherServlet(HttpProperties httpProperties, WebMvcProperties webMvcProperties) {
-        DispatcherServlet dispatcherServlet = new DispatcherServlet();
+        UnitDispatcherServlet dispatcherServlet = new UnitDispatcherServlet();
         dispatcherServlet.setDispatchOptionsRequest(webMvcProperties.isDispatchOptionsRequest());
         dispatcherServlet.setDispatchTraceRequest(webMvcProperties.isDispatchTraceRequest());
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(webMvcProperties.isThrowExceptionIfNoHandlerFound());
         dispatcherServlet.setPublishEvents(webMvcProperties.isPublishRequestHandledEvents());
         dispatcherServlet.setEnableLoggingRequestDetails(httpProperties.isLogRequestDetails());
+        // 注册到osgi环境
+        UnitUtil.registService(dispatcherServlet,DispatcherServlet.class.getName());
         return dispatcherServlet;
     }
     /**

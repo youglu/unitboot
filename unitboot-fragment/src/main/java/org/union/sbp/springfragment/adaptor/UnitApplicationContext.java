@@ -1,41 +1,29 @@
 package org.union.sbp.springfragment.adaptor;
 
-import com.fasterxml.jackson.databind.util.BeanUtil;
-import org.apache.catalina.LifecycleState;
-import org.apache.catalina.core.ApplicationContext;
-import org.apache.catalina.core.ApplicationContextFacade;
-import org.apache.catalina.core.StandardContext;
-import org.eclipse.osgi.framework.internal.core.BundleContextImpl;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.config.BeanDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
-import org.springframework.cglib.core.ReflectUtils;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.ReflectionUtils;
 import org.union.sbp.springfragment.utils.ReflectUtil;
+import org.union.sbp.springfragment.utils.SpringUnitUtil;
 
 import javax.servlet.ServletContext;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class UnitApplicationContext extends AnnotationConfigServletWebServerApplicationContext {
+
+
+    protected final Logger logger = LoggerFactory.getLogger(UnitApplicationContext.class);
 
     @Override
     protected void onRefresh() { 
         // 获得WEB单元中提供的ServletContext
-        final ServletContext servletContext = fetchServletContextFromOSGIService();
+        final ServletContext servletContext = SpringUnitUtil.fetchServletContextFromOSGIService();
         if(null != servletContext){
             final int STARTING_PREP = 3;
             changeWebContextState(servletContext, STARTING_PREP);
             setServletContext(servletContext);
-        }
+            // 定自定义一个属性保存applicationContext实例，在多单元环境下dispatcherServlet初始化时getWebApplicationContext:127, WebApplicationContextUtils会用于
 
+        }
         super.onRefresh();
 
         if(null != servletContext) {
@@ -44,17 +32,7 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
         }
     }
 
-    private ServletContext fetchServletContextFromOSGIService(){
-        Bundle bundle = FrameworkUtil.getBundle(this.getClass());
-        BundleContext bundleContext = bundle.getBundleContext();
-        ServiceReference serviceReference = bundleContext.getServiceReference(ServletContext.class.getName());
 
-        if(null != serviceReference){
-            ServletContext servletContext = (ServletContext) bundleContext.getService(serviceReference);
-            return servletContext;
-        }
-        return null;
-    }
 
     /**
      * 更改tomcat容器状态,参考 org.apache.catalina.LifecycleState类中的枚举位置.
@@ -76,11 +54,5 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
             e.printStackTrace();
         }
 
-    }
-
-    @Override
-    public void registerBeanDefinition(String beanName, BeanDefinition beanDefinition) throws BeanDefinitionStoreException {
-        System.out.println("bbbb:"+beanName);
-        super.registerBeanDefinition(beanName, beanDefinition);
     }
 }
