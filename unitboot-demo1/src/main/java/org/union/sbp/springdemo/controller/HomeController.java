@@ -17,7 +17,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(path = HomeController.HomeController_PATH)
 public class HomeController {
-    public static final String HomeController_PATH = "/demo1";//${unitName:}
+    public static final String HomeController_PATH = "/app1/demo1";//${unitName:}
     @Autowired
     private Environment environment;
 
@@ -35,7 +35,7 @@ public class HomeController {
     @ApiImplicitParam(name = "name", value = "姓名", required = true)
     @RequestMapping(value = "/home", method = RequestMethod.GET)
     public String home(@RequestParam(value = "name") String name) {
-        return "Hello，Spring Boot:" + demoService
+        return "1111--Hello，Spring Boot:" + demoService
                 +",uname="+environment.getProperty("uname")
                 +",unitboot:"+environment.getProperty("unitboot")
                 +",unitName:"+environment.getProperty("unitName")

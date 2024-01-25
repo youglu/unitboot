@@ -25,7 +25,6 @@ import org.union.sbp.springfragment.config.UnitBeanDefinConfiguration;
 
 @MapperScan(basePackages = {"org.union.sbp.springdemo.dao"})
 @Import({MybatisAutoConfiguration.class,Knife4jConfiguration.class})
-// @UnitConfigComponent
 public class UnitConfiguration  {
     public UnitConfiguration(){
         org.h2.upgrade.DbUpgrade gg = null;

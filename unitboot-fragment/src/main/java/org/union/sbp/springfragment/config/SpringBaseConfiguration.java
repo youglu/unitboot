@@ -3,10 +3,7 @@ package org.union.sbp.springfragment.config;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.autoconfigure.jdbc.EmbeddedDataSourceConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 
 /**
  * 用于所有子单元的公共配置，在子单元创建子context时会统一应用此类的注解配置
@@ -14,11 +11,12 @@ import org.springframework.context.annotation.Primary;
  * @since JDK1.8
  */
 @ComponentScan(
-        basePackages = {"org.union.sbp.springfragment.**"},
+        basePackages = {"org.union.sbp.**"},
         excludeFilters = {
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes = {EmbeddedDataSourceConfiguration.class}),
         @ComponentScan.Filter(value={SpringBootApplication.class})
         })
+@Conditional(OnOsgiEnvCondition.class)
 public class SpringBaseConfiguration {
     public SpringBaseConfiguration(){
         System.out.println("SpringBaseConfiguration 初始化");

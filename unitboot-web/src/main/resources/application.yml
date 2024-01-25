@@ -5,7 +5,7 @@ springfox:
 server:
   port: 9093
   servlet:
-    context-path: /web
+    context-path: /
 spring:
   main:
     allow-bean-definition-overriding: true

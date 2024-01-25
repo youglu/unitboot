@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServlet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -131,5 +132,14 @@ public class UnitUtil {
             }
             return shouldUnregister;
         });
+    }
+
+    /**
+     * 根据类获得相应的单元
+     * @param clax
+     * @return
+     */
+    public static Bundle getBundleByClass(Class clax) {
+        return FrameworkUtil.getBundle(clax);
     }
 }

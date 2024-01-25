@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.union.sbp.springdemo2.service.DemoService;
 
 @RestController
-@RequestMapping(path = "/demo2")
+@RequestMapping(path = HomeController.HomeController_PATH)
 public class HomeController {
+
+    public static final String HomeController_PATH = "/app2/demo2";//${unitName:}
 
     @Autowired
     private DemoService demoService;

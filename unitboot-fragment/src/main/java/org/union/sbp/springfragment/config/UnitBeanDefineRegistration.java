@@ -4,28 +4,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletRegistrationBean;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.union.sbp.springfragment.adaptor.UnitApplicationContext;
 import org.union.sbp.springfragment.adaptor.UnitDispatcherServlet;
-import org.union.sbp.springfragment.adaptor.UnitServletConfig;
-import org.union.sbp.springfragment.constinfo.SpringUnitConst;
 import org.union.sbp.springfragment.utils.SpringUnitUtil;
 import org.union.sbp.springfragment.utils.UnitUtil;
 
 import javax.servlet.MultipartConfigElement;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 /**
  * 配置类
  */
 @Configuration
+@Conditional(OnOsgiEnvCondition.class)
 public class UnitBeanDefineRegistration {
 
     /**日志*/
@@ -45,6 +42,7 @@ public class UnitBeanDefineRegistration {
         dispatcherServlet.setThrowExceptionIfNoHandlerFound(webMvcProperties.isThrowExceptionIfNoHandlerFound());
         dispatcherServlet.setPublishEvents(webMvcProperties.isPublishRequestHandledEvents());
         dispatcherServlet.setEnableLoggingRequestDetails(httpProperties.isLogRequestDetails());
+
         // 注册到osgi环境
         UnitUtil.registService(dispatcherServlet,DispatcherServlet.class.getName());
         return dispatcherServlet;

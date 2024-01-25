@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: spring-fragment
 Bundle-SymbolicName: spring-fragment
 Bundle-Version: 1.0.0
-Fragment-Host: spring-web,app1
+Fragment-Host: spring-web,app1,app2
 Import-Package: javax.naming,
  javax.script,
  javax.sql,

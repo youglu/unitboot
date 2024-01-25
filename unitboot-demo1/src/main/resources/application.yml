@@ -40,7 +40,7 @@ spring:
     allow-bean-definition-overriding: true
 server:
   servlet:
-    context-path: /app1
+    context-path: /
   port: 9010
 #mybatis配置
 mybatis:
