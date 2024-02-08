@@ -2,7 +2,6 @@ package org.union.sbp.springfragment.adaptor;
 
 import org.osgi.framework.Bundle;
 import org.springframework.lang.Nullable;
-import org.springframework.util.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.union.sbp.springfragment.constinfo.SpringUnitConst;
@@ -66,9 +65,9 @@ public class UnitDispatcherServlet extends DispatcherServlet {
         if(null == dispatcherServletServiceList || dispatcherServletServiceList.size() == 1){
             return null;
         }else{
+            // 获得当前dispatcherServlet所在单元的标识名
+            final String unitSymbolicName = getUnitSymbolicNameFromRequest(request);
             for(HttpServlet dispatcherServlet:dispatcherServletServiceList){
-                // 获得当前dispatcherServlet所在单元的标识名
-                final String unitSymbolicName = getUnitSymbolicNameFromRequest(request);
                 final Bundle unit = UnitUtil.getBundleByClass(dispatcherServlet.getClass());
                 if(null != unit && unit.getSymbolicName().equals(unitSymbolicName)){
                     return dispatcherServlet;

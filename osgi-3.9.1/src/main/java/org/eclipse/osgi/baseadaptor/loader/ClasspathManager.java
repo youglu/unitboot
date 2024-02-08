@@ -11,18 +11,15 @@
 
 package org.eclipse.osgi.baseadaptor.loader;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.security.ProtectionDomain;
-import java.util.*;
 import org.eclipse.osgi.baseadaptor.BaseAdaptor;
 import org.eclipse.osgi.baseadaptor.BaseData;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleEntry;
 import org.eclipse.osgi.baseadaptor.bundlefile.BundleFile;
 import org.eclipse.osgi.baseadaptor.hooks.ClassLoadingHook;
 import org.eclipse.osgi.baseadaptor.hooks.ClassLoadingStatsHook;
-import org.eclipse.osgi.framework.adaptor.*;
+import org.eclipse.osgi.framework.adaptor.BundleClassLoader;
+import org.eclipse.osgi.framework.adaptor.BundleData;
+import org.eclipse.osgi.framework.adaptor.BundleProtectionDomain;
 import org.eclipse.osgi.framework.debug.Debug;
 import org.eclipse.osgi.framework.internal.core.FrameworkProperties;
 import org.eclipse.osgi.internal.baseadaptor.AdaptorMsg;
@@ -30,6 +27,12 @@ import org.eclipse.osgi.internal.baseadaptor.ArrayMap;
 import org.eclipse.osgi.util.NLS;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.security.ProtectionDomain;
+import java.util.*;
 
 /**
  * A helper class for <code>BaseClassLoader</code> implementations.  This class will keep track of 
@@ -176,6 +179,7 @@ public class ClasspathManager {
 		for (int i = 0; i < loaderHooks.length; i++)
 			hookAdded |= loaderHooks[i].addClassPathEntry(result, cp, hostloader, sourcedata, sourcedomain);
 		if (!addClassPathEntry(result, cp, hostloader, sourcedata, sourcedomain) && !hookAdded) {
+			System.err.println(ClasspathManager.class.getName()+".findClassPathEntry添加类路径:"+cp+"失败");
 			BundleException be = new BundleException(NLS.bind(AdaptorMsg.BUNDLE_CLASSPATH_ENTRY_NOT_FOUND_EXCEPTION, cp, sourcedata.getLocation()), BundleException.MANIFEST_ERROR);
 			sourcedata.getAdaptor().getEventPublisher().publishFrameworkEvent(FrameworkEvent.INFO, sourcedata.getBundle(), be);
 		}

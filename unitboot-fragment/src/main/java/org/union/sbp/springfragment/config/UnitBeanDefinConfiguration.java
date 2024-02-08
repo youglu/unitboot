@@ -1,10 +1,9 @@
 package org.union.sbp.springfragment.config;
 
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.AnnotationBeanNameGenerator;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -13,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @since JDK1.8
  */
 @Configuration
+@Conditional(OnOsgiEnvCondition.class)
 public class UnitBeanDefinConfiguration extends AnnotationBeanNameGenerator {
     public UnitBeanDefinConfiguration(){
         System.out.println("初始化UnitBeanDefinConfiguration");

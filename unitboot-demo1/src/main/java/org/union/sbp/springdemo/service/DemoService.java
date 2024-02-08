@@ -2,7 +2,6 @@ package org.union.sbp.springdemo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.union.sbp.springdemo.dao.Demo1Dao;
 import org.union.sbp.springdemo.model.po.Demo1;
 
@@ -20,6 +19,6 @@ public class DemoService {
 
     public String findNames(Map params) {
         List<Demo1> demo1List = demo1Dao.list(params);
-        return "a,b,c"+demo1List;
+        return "1,a,b,c"+demo1List;
     }
 }

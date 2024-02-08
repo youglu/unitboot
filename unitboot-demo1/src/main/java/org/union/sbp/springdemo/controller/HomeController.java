@@ -50,10 +50,17 @@ public class HomeController {
     @ApiOperation(value = "获得name列表")
     @RequestMapping(value = "/names", method = RequestMethod.GET)
     public String names(@RequestParam(value = "name") String name, @RequestParam(value = "version") int version) {
+        System.out.println("v1......");
         Map params = new HashMap();
         return demoService.findNames(params);
     }
-
+    @ApiOperation(value = "获得name列表")
+    @RequestMapping(value = "/names2", method = RequestMethod.GET)
+    public String names2(@RequestParam(value = "name") String name, @RequestParam(value = "version") int version) {
+        System.out.println("v2......");
+        Map params = new HashMap();
+        return demoService.findNames(params);
+    }
     @ApiImplicitParams({@ApiImplicitParam(name = "name", value = "标识", required = true),
             @ApiImplicitParam(name = "version", value = "版本", required = true)})
     @ApiOperation(value = "服务名")
