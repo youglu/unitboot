@@ -7,3 +7,7 @@ unitboot-1.0/bin/configuration/1698722034624.bak_0.log
 unitboot-1.0/bin/configuration/1698722034624.log
 unitboot-1.0/bin/configuration/1698740367922.bak_0.log
 unitboot-1.0/bin/configuration/1698740367922.log
+/unit-ui/main/build/
+/unit-ui/main/node_modules/
+/unit-ui/main/out/
+/unit-ui/renderer/node_modules/

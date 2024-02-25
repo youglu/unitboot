@@ -1,0 +1,30 @@
+### 报connect ETIMEDOUT
+npm config set registry https://registry.npm.taobao.org
+yarn config set registry https://registry.npm.taobao.org --global 
+yarn config set disturl https://registry.npm.taobao.org/dist --global
+
+国内npm源镜像（npm加速下载）
+指定npm镜像
+
+    npm 官方原始镜像网址是：https://registry.npmjs.org/
+    淘宝 NPM 镜像：https://registry.npm.taobao.org
+    阿里云 NPM 镜像：https://npm.aliyun.com
+    腾讯云 NPM 镜像：https://mirrors.cloud.tencent.com/npm/
+    华为云 NPM 镜像：https://mirrors.huaweicloud.com/repository/npm/
+    网易 NPM 镜像：https://mirrors.163.com/npm/
+    中科院大学开源镜像站：http://mirrors.ustc.edu.cn/
+    清华大学开源镜像站：https://mirrors.tuna.tsinghua.edu.cn/
+    腾讯，华为，阿里的镜像站基本上比较全
+### 如果有electron-forge打包提示electron-builder不是内部命令什么的处理
+去掉 "postinstall": "electron-builder install-app-deps" 再试
+
+### 日志输出路径
+electron-log:
+
+on Linux: ~/.config/{app name}/logs/{process type}.log
+on macOS: ~/Library/Logs/{app name}/{process type}.log
+on Windows: %USERPROFILE%\AppData\Roaming\{app name}\logs\{process type}.log
+
+### 打包
+如果打包用的是electron-build且目标为 squirrel 则需要安装 electron-builder-squirrel-windows
+npm install electron-builder-squirrel-windows

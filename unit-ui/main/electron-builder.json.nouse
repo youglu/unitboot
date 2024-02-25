@@ -1,0 +1,25 @@
+{
+  "appId": "union.com",
+  "productName": "康美风中间件", 
+  "copyright": "union Copyright © 2022", 
+  "files": ["/src/index.js", "./dist"],
+  "extraFiles": [
+    "./server"
+  ],
+  "directories": {
+    "output": "dists"
+  },
+  "win": { 
+    "requestedExecutionLevel": "requireAdministrator", 
+    "target": ["nsis", "zip"]
+  },
+  "nsis": {
+    "oneClick": false, 
+    "allowElevation": true, 
+    "installerIcon": "/src/icon/kmf-56.ico",
+    "allowToChangeInstallationDirectory": true, 
+    "createDesktopShortcut": true, 
+    "createStartMenuShortcut": true, 
+    "shortcutName": "康美风中间件"
+  }
+}

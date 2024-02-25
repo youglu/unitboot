@@ -1,0 +1,6 @@
+### 将VUE打包后放到ELECTRON运行报 C:///file…找不到文件
+修改 vue.config.js
+ publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
+为
+ publicPath: process.env.NODE_ENV === "production" ? "./" : "./",
+ 
