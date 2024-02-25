@@ -33,7 +33,6 @@ public class UnitDispatcherServlet extends DispatcherServlet {
         this.getServletContext();
         return getContextAttribute();
     }
-
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

@@ -27,7 +27,7 @@
     如果另外将文件追加器添加到记录器（例如L），则对L和L'子项启用的记录请求将打印在文件和控制台上。
     通过将记录器的additivity标志设置为false，可以覆盖此默认行为，以便不再添加appender累积-->
     <!-- configuration中最多允许一个root，别的logger如果没有设置级别则从父级别root继承 -->
-    <root level="INFO">
+    <root level="TRACE">
         <appender-ref ref="STDOUT" />
     </root>
 

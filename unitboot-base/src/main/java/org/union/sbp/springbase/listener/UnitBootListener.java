@@ -1,13 +1,6 @@
 package org.union.sbp.springbase.listener;
 
-import org.eclipse.osgi.framework.internal.core.AbstractBundle;
-import org.eclipse.osgi.framework.internal.core.BundleFragment;
-import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.framework.internal.core.Framework;
-import org.eclipse.osgi.service.resolver.BundleDescription;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
-import org.osgi.framework.BundleException;
 import org.osgi.framework.SynchronousBundleListener;
 import org.union.sbp.springbase.adaptor.SpringUnitBootAdaptor;
 
@@ -34,7 +27,7 @@ public class UnitBootListener implements SynchronousBundleListener {
                 break;
             case BundleEvent.STOPPED:
                 System.out.println(":已停止");
-                //SpringUnitBootAdaptor.stopSpringUnit(event.getBundle());
+                SpringUnitBootAdaptor.stopSpringUnit(event.getBundle());
                 break;
             case BundleEvent.STARTED:
                 System.out.println(":启动完毕");

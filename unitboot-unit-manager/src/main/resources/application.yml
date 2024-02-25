@@ -1,0 +1,13 @@
+springfox:
+  documentation:
+    swagger-ui:
+      base-url: /
+server:
+  port: 9094
+  servlet:
+    contextPath: /
+spring:
+  main:
+    allow-bean-definition-overriding: true
+knife4j:
+  enable: true

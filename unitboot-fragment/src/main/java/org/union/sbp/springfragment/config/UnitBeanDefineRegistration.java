@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.http.HttpProperties;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletRegistrationBean;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
@@ -48,7 +47,7 @@ public class UnitBeanDefineRegistration {
         return dispatcherServlet;
     }
     /**
-     * 覆盖dispatcherServlet的注册处理类,用于对注册进行重命名名，解决多个springboot单元共享同一个web容器无法注册dpatcherServlet到web容器问题.
+     * 覆盖dispatcherServlet的注册处理类,用于对注册进行重命名名，解决多个springboot单元共享同一个web容器无法注册dispatcherServlet到web容器问题.
      *
      * @param dispatcherServlet dispatcherServlet
      * @param webMvcProperties webMvcProperties
@@ -60,10 +59,9 @@ public class UnitBeanDefineRegistration {
     public DispatcherServletRegistrationBean dispatcherServletRegistration(DispatcherServlet dispatcherServlet,
                                                                            WebMvcProperties webMvcProperties, ObjectProvider<MultipartConfigElement> multipartConfig) {
         final String registPath = dispatcherServlet.getEnvironment().getProperty("server.servlet.context-path");
-        // webMvcProperties.getServlet().getPath()
         DispatcherServletRegistrationBean registration = new DispatcherServletRegistrationBean(dispatcherServlet,
                 registPath);
-        // 重命名dispatcherServlet的注册名，解决多个springboot单元共享同一个web容器无法注册dpatcherServlet到web容器问题.
+        // 重命名dispatcherServlet的注册名，解决多个springboot单元共享同一个web容器无法注册dispatcherServlet到web容器问题.
         registration.setName(SpringUnitUtil.getDispatcherServletRegistName());
         registration.setLoadOnStartup(webMvcProperties.getServlet().getLoadOnStartup());
         multipartConfig.ifAvailable(registration::setMultipartConfig);

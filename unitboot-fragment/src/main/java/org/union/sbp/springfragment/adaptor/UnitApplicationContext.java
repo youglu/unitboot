@@ -2,12 +2,14 @@ package org.union.sbp.springfragment.adaptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.union.sbp.springfragment.utils.ReflectUtil;
 import org.union.sbp.springfragment.utils.SpringUnitUtil;
 
 import javax.servlet.ServletContext;
 
+@SpringBootApplication()
 public class UnitApplicationContext extends AnnotationConfigServletWebServerApplicationContext {
 
 
@@ -22,7 +24,6 @@ public class UnitApplicationContext extends AnnotationConfigServletWebServerAppl
             changeWebContextState(servletContext, STARTING_PREP);
             setServletContext(servletContext);
             // 定自定义一个属性保存applicationContext实例，在多单元环境下dispatcherServlet初始化时getWebApplicationContext:127, WebApplicationContextUtils会用于
-
         }
         super.onRefresh();
 

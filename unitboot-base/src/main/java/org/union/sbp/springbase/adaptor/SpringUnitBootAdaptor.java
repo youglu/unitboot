@@ -1,14 +1,12 @@
 package org.union.sbp.springbase.adaptor;
 
-import org.eclipse.osgi.framework.internal.core.AbstractBundle;
 import org.eclipse.osgi.framework.internal.core.BundleFragment;
 import org.eclipse.osgi.framework.internal.core.BundleHost;
-import org.eclipse.osgi.framework.internal.core.Framework;
-import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * SpringBoot工程以OSGI单元形式运行.
  *
@@ -32,6 +30,7 @@ public class SpringUnitBootAdaptor {
      * @param springUnit
      */
     public synchronized static void stopSpringUnit(final Bundle springUnit) {
+        // 清理相关资源
 
     }
 
@@ -53,12 +52,50 @@ public class SpringUnitBootAdaptor {
      */
     public static void attachFragment(final Bundle startingBundle) {
         // 尝试附加当前处理单元的fragment，因为在update时单元的fragment已置为空,这样在加载fragment中的类时就无法找到了.
-
         if (null != startingBundle && startingBundle instanceof BundleHost) {
             final BundleHost bundleHost = (BundleHost) startingBundle;
             final BundleFragment[] fragments = bundleHost.getFragments();
+
+            // 检查当前单元是否主动依赖了相应的fragment
+            final String dependeceFragmentUnitsName = bundleHost.getHeaders().get("Fragment-Unit");
+            String[] fragmentSymblicNameArray = null;
+            if(null != dependeceFragmentUnitsName && !"".equals(dependeceFragmentUnitsName)){
+                fragmentSymblicNameArray = dependeceFragmentUnitsName.split(",");
+            }
+
             if (null == fragments || fragments.length <= 0) {
-                final Framework framework = bundleHost.getFramework();
+                final Bundle[] bundles = bundleHost.getBundleContext().getBundles();
+                for (Bundle bundle : bundles) {
+                    if (bundle instanceof BundleFragment) {
+
+                        String hostBundleId = bundle.getHeaders().get("Fragment-Host");
+                        for(String bundleId:hostBundleId.split(",")){
+                            if (bundleId.equals(startingBundle.getSymbolicName())) {
+                                try {
+                                    bundleHost.attachFragment((BundleFragment) bundle);
+                                } catch (BundleException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        if(null != fragmentSymblicNameArray && fragmentSymblicNameArray.length > 0){
+                            for(String fragmentSymbolicName:fragmentSymblicNameArray){
+                                if (fragmentSymbolicName.equals(bundle.getSymbolicName())) {
+                                    try {
+                                        bundleHost.attachFragment((BundleFragment) bundle);
+                                    } catch (BundleException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+
+                /*
                 final BundleDescription[] bundleDescriptions = framework.getAdaptor().getState().getBundles();
                 for (BundleDescription bundleDescription : bundleDescriptions) {
                     final AbstractBundle abstractBundle = (AbstractBundle) bundleDescription.getBundle();
@@ -75,6 +112,7 @@ public class SpringUnitBootAdaptor {
                         }
                     }
                 }
+                */
             }
         }
     }
