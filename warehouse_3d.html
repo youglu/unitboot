@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 仓库可视化系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        #canvas-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-width: 350px;
+            z-index: 100;
+        }
+
+        .info-panel h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .info-item {
+            margin: 10px 0;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .info-value {
+            color: #2c3e50;
+            font-size: 14px;
+            margin-top: 3px;
+        }
+
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .control-btn.active {
+            background: #27ae60;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        .legend h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 200;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .warehouse-selector {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .warehouse-selector select {
+            padding: 8px 15px;
+            border: 2px solid #3498db;
+            border-radius: 20px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+            max-width: 250px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="canvas-container"></div>
+        
+        <div class="warehouse-selector">
+            <label for="warehouse-select">选择仓库:</label>
+            <select id="warehouse-select">
+                <option value="1">仓库 A (WH001)</option>
+                <option value="2">仓库 B (WH002)</option>
+                <option value="3">仓库 C (WH003)</option>
+            </select>
+        </div>
+
+        <div class="info-panel" id="info-panel">
+            <h2>📦 仓库信息</h2>
+            <div id="info-content">
+                <div class="info-item">
+                    <div class="info-label">名称</div>
+                    <div class="info-value" id="info-name">仓库 A</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">编号</div>
+                    <div class="info-value" id="info-code">WH001</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">货架数量</div>
+                    <div class="info-value" id="info-shelves">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">仓位总数</div>
+                    <div class="info-value" id="info-positions">0</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">状态</div>
+                    <div class="info-value">
+                        <span class="status-badge status-active" id="info-status">启用</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>图例说明</h3>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #3498db;"></div>
+                <span>可用仓位</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #27ae60;"></div>
+                <span>部分占用</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #e74c3c;"></div>
+                <span>已满仓位</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #95a5a6;"></div>
+                <span>不可用仓位</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #f39c12;"></div>
+                <span>选中对象</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn active" id="btn-rotate">🔄 自动旋转</button>
+            <button class="control-btn" id="btn-reset">🎯 重置视角</button>
+            <button class="control-btn" id="btn-wireframe">📐 线框模式</button>
+            <button class="control-btn" id="btn-export">💾 导出数据</button>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div>正在加载 3D 仓库数据...</div>
+        </div>
+
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
+    <script>
+        // 模拟数据库数据
+        const mockData = {
+            warehouses: [
+                { id: 1, name: '仓库 A', code: 'WH001', warehouse_id: 'WH001', row_no: 'R01', status: 1, dbno: 'DB001' },
+                { id: 2, name: '仓库 B', code: 'WH002', warehouse_id: 'WH002', row_no: 'R02', status: 1, dbno: 'DB001' },
+                { id: 3, name: '仓库 C', code: 'WH003', warehouse_id: 'WH003', row_no: 'R03', status: 0, dbno: 'DB001' }
+            ],
+            shelves: [
+                // 仓库 A 的货架
+                { id: 1, name: '货架 A-01', code: 'SH-A-01', warehouse_id: 'WH001', row_no: 1, column_no: 1, layers: 5, positions_of_layer: 4, status: 1, dbno: 'DB001' },
+                { id: 2, name: '货架 A-02', code: 'SH-A-02', warehouse_id: 'WH001', row_no: 1, column_no: 2, layers: 5, positions_of_layer: 4, status: 1, dbno: 'DB001' },
+                { id: 3, name: '货架 A-03', code: 'SH-A-03', warehouse_id: 'WH001', row_no: 1, column_no: 3, layers: 5, positions_of_layer: 4, status: 1, dbno: 'DB001' },
+                { id: 4, name: '货架 A-04', code: 'SH-A-04', warehouse_id: 'WH001', row_no: 2, column_no: 1, layers: 5, positions_of_layer: 4, status: 1, dbno: 'DB001' },
+                { id: 5, name: '货架 A-05', code: 'SH-A-05', warehouse_id: 'WH001', row_no: 2, column_no: 2, layers: 5, positions_of_layer: 4, status: 1, dbno: 'DB001' },
+                { id: 6, name: '货架 A-06', code: 'SH-A-06', warehouse_id: 'WH001', row_no: 2, column_no: 3, layers: 5, positions_of_layer: 4, status: 1, dbno: 'DB001' },
+                // 仓库 B 的货架
+                { id: 7, name: '货架 B-01', code: 'SH-B-01', warehouse_id: 'WH002', row_no: 1, column_no: 1, layers: 4, positions_of_layer: 3, status: 1, dbno: 'DB001' },
+                { id: 8, name: '货架 B-02', code: 'SH-B-02', warehouse_id: 'WH002', row_no: 1, column_no: 2, layers: 4, positions_of_layer: 3, status: 1, dbno: 'DB001' },
+                { id: 9, name: '货架 B-03', code: 'SH-B-03', warehouse_id: 'WH002', row_no: 1, column_no: 3, layers: 4, positions_of_layer: 3, status: 1, dbno: 'DB001' },
+                // 仓库 C 的货架
+                { id: 10, name: '货架 C-01', code: 'SH-C-01', warehouse_id: 'WH003', row_no: 1, column_no: 1, layers: 3, positions_of_layer: 2, status: 0, dbno: 'DB001' }
+            ],
+            positions: []
+        };
+
+        // 生成仓位数据
+        function generatePositions() {
+            let positionId = 1;
+            mockData.shelves.forEach(shelf => {
+                for (let layer = 1; layer <= shelf.layers; layer++) {
+                    for (let pos = 1; pos <= shelf.positions_of_layer; pos++) {
+                        const occupancy = Math.random();
+                        let status = 1;
+                        let maxCapacity = 100;
+                        let currentLoad = 0;
+                        
+                        if (occupancy > 0.8) {
+                            status = 3; // 已满
+                            currentLoad = maxCapacity;
+                        } else if (occupancy > 0.5) {
+                            status = 2; // 部分占用
+                            currentLoad = Math.floor(Math.random() * maxCapacity * 0.7);
+                        } else if (occupancy < 0.1) {
+                            status = 0; // 不可用
+                        }
+                        
+                        mockData.positions.push({
+                            id: positionId++,
+                            code: `POS-${shelf.code}-L${layer}-${pos}`,
+                            warehouse_id: parseInt(shelf.warehouse_id.replace('WH', '')),
+                            name: `仓位 ${shelf.name}-${layer}-${pos}`,
+                            area: `区域 ${Math.ceil(shelf.row_no / 2)}`,
+                            shelf_no: shelf.id,
+                            row_no: layer,
+                            column_no: pos,
+                            status: status,
+                            max_capacity: maxCapacity,
+                            order_no: positionId,
+                            dbno: shelf.dbno,
+                            current_load: currentLoad
+                        });
+                    }
+                }
+            });
+        }
+
+        generatePositions();
+
+        // Three.js 变量
+        let scene, camera, renderer, controls;
+        let warehouseGroup, shelvesGroup, positionsGroup;
+        let selectedObject = null;
+        let raycaster, mouse;
+        let isAutoRotate = true;
+        let isWireframe = false;
+        const objects = [];
+
+        // 颜色配置
+        const colors = {
+            available: 0x3498db,      // 蓝色 - 可用
+            partial: 0x27ae60,        // 绿色 - 部分占用
+            full: 0xe74c3c,           // 红色 - 已满
+            unavailable: 0x95a5a6,    // 灰色 - 不可用
+            selected: 0xf39c12,       // 橙色 - 选中
+            shelf: 0x34495e,          // 深蓝灰 - 货架
+            warehouse: 0x2c3e50       // 深色 - 仓库
+        };
+
+        // 初始化场景
+        function init() {
+            const container = document.getElementById('canvas-container');
+            
+            // 创建场景
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a2e);
+            scene.fog = new THREE.Fog(0x1a1a2e, 50, 200);
+
+            // 创建相机
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(30, 25, 30);
+            camera.lookAt(0, 5, 0);
+
+            // 创建渲染器
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // 添加轨道控制器
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxPolarAngle = Math.PI / 2.2;
+            controls.minDistance = 10;
+            controls.maxDistance = 100;
+            controls.autoRotate = isAutoRotate;
+            controls.autoRotateSpeed = 2;
+
+            // 添加光源
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(50, 50, 50);
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = 2048;
+            directionalLight.shadow.mapSize.height = 2048;
+            scene.add(directionalLight);
+
+            const pointLight = new THREE.PointLight(0x3498db, 0.5, 100);
+            pointLight.position.set(0, 30, 0);
+            scene.add(pointLight);
+
+            // 创建组
+            warehouseGroup = new THREE.Group();
+            shelvesGroup = new THREE.Group();
+            positionsGroup = new THREE.Group();
+            scene.add(warehouseGroup);
+            scene.add(shelvesGroup);
+            scene.add(positionsGroup);
+
+            // 添加地面
+            createGround();
+
+            // 添加网格辅助线
+            const gridHelper = new THREE.GridHelper(100, 50, 0x444444, 0x222222);
+            scene.add(gridHelper);
+
+            // 初始化射线检测
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // 加载初始仓库
+            loadWarehouse(1);
+
+            // 隐藏加载动画
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+            }, 1000);
+
+            // 事件监听
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('click', onMouseClick);
+            renderer.domElement.addEventListener('mousemove', onMouseMove);
+            
+            // 按钮事件
+            document.getElementById('btn-rotate').addEventListener('click', toggleAutoRotate);
+            document.getElementById('btn-reset').addEventListener('click', resetView);
+            document.getElementById('btn-wireframe').addEventListener('click', toggleWireframe);
+            document.getElementById('btn-export').addEventListener('click', exportData);
+            document.getElementById('warehouse-select').addEventListener('change', (e) => {
+                loadWarehouse(parseInt(e.target.value));
+            });
+
+            // 开始动画循环
+            animate();
+        }
+
+        // 创建地面
+        function createGround() {
+            const groundGeometry = new THREE.PlaneGeometry(100, 100);
+            const groundMaterial = new THREE.MeshStandardMaterial({ 
+                color: 0x1a1a2e,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.1;
+            ground.receiveShadow = true;
+            scene.add(ground);
+        }
+
+        // 加载仓库
+        function loadWarehouse(warehouseId) {
+            // 清空现有对象
+            while(warehouseGroup.children.length > 0) { 
+                warehouseGroup.remove(warehouseGroup.children[0]); 
+            }
+            while(shelvesGroup.children.length > 0) { 
+                shelvesGroup.remove(shelvesGroup.children[0]); 
+            }
+            while(positionsGroup.children.length > 0) { 
+                positionsGroup.remove(positionsGroup.children[0]); 
+            }
+            objects.length = 0;
+
+            const warehouse = mockData.warehouses.find(w => w.id === warehouseId);
+            const shelves = mockData.shelves.filter(s => s.warehouse_id === warehouse.code);
+            const positions = mockData.positions.filter(p => p.warehouse_id === warehouseId);
+
+            // 更新信息面板
+            updateInfoPanel(warehouse, shelves.length, positions.length);
+
+            // 创建仓库边界
+            createWarehouseBoundary(warehouse, shelves);
+
+            // 创建货架
+            shelves.forEach(shelf => {
+                createShelf(shelf, positions);
+            });
+
+            // 调整相机视角
+            adjustCamera(shelves);
+        }
+
+        // 创建仓库边界
+        function createWarehouseBoundary(warehouse, shelves) {
+            const maxRow = Math.max(...shelves.map(s => s.row_no));
+            const maxCol = Math.max(...shelves.map(s => s.column_no));
+            
+            const width = maxCol * 8 + 4;
+            const depth = maxRow * 8 + 4;
+            const height = 1;
+
+            const geometry = new THREE.BoxGeometry(width, height, depth);
+            const material = new THREE.MeshStandardMaterial({ 
+                color: colors.warehouse,
+                transparent: true,
+                opacity: 0.3,
+                wireframe: true
+            });
+            
+            const boundary = new THREE.Mesh(geometry, material);
+            boundary.position.set(0, 0.5, 0);
+            boundary.userData = {
+                type: 'warehouse',
+                data: warehouse
+            };
+            
+            warehouseGroup.add(boundary);
+            objects.push(boundary);
+
+            // 添加仓库标签
+            createLabel(warehouse.name, 0, 3, 0, warehouseGroup);
+        }
+
+        // 创建货架
+        function createShelf(shelf, allPositions) {
+            const positions = allPositions.filter(p => p.shelf_no === shelf.id);
+            
+            const shelfWidth = 3;
+            const shelfDepth = 2;
+            const shelfHeight = shelf.layers * 1.2;
+            const layerHeight = shelfHeight / shelf.layers;
+
+            const x = (shelf.column_no - 1) * 8 - (Math.max(...mockData.shelves.filter(s => s.warehouse_id === shelf.warehouse_id).map(s => s.column_no)) * 4) + 4;
+            const z = (shelf.row_no - 1) * 8 - (Math.max(...mockData.shelves.filter(s => s.warehouse_id === shelf.warehouse_id).map(s => s.row_no)) * 4) + 4;
+
+            // 创建货架主体
+            const shelfGeometry = new THREE.BoxGeometry(shelfWidth, shelfHeight, shelfDepth);
+            const shelfMaterial = new THREE.MeshStandardMaterial({ 
+                color: colors.shelf,
+                roughness: 0.7,
+                metalness: 0.3,
+                wireframe: isWireframe
+            });
+            
+            const shelfMesh = new THREE.Mesh(shelfGeometry, shelfMaterial);
+            shelfMesh.position.set(x, shelfHeight / 2, z);
+            shelfMesh.castShadow = true;
+            shelfMesh.receiveShadow = true;
+            shelfMesh.userData = {
+                type: 'shelf',
+                data: shelf,
+                positions: positions
+            };
+            
+            shelvesGroup.add(shelfMesh);
+            objects.push(shelfMesh);
+
+            // 创建层板
+            for (let i = 0; i <= shelf.layers; i++) {
+                const layerGeometry = new THREE.BoxGeometry(shelfWidth + 0.2, 0.1, shelfDepth + 0.2);
+                const layerMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x5d6d7e,
+                    metalness: 0.5
+                });
+                const layer = new THREE.Mesh(layerGeometry, layerMaterial);
+                layer.position.set(x, i * layerHeight, z);
+                shelvesGroup.add(layer);
+            }
+
+            // 创建立柱
+            const postGeometry = new THREE.CylinderGeometry(0.1, 0.1, shelfHeight, 8);
+            const postMaterial = new THREE.MeshStandardMaterial({ color: 0x2c3e50 });
+            
+            const positions_offsets = [
+                [-shelfWidth/2, -shelfDepth/2],
+                [shelfWidth/2, -shelfDepth/2],
+                [-shelfWidth/2, shelfDepth/2],
+                [shelfWidth/2, shelfDepth/2]
+            ];
+            
+            positions_offsets.forEach(offset => {
+                const post = new THREE.Mesh(postGeometry, postMaterial);
+                post.position.set(x + offset[0], shelfHeight / 2, z + offset[1]);
+                shelvesGroup.add(post);
+            });
+
+            // 创建仓位
+            positions.forEach((pos, index) => {
+                createPosition(pos, x, z, shelfWidth, shelfDepth, layerHeight, shelf.layers, shelf.positions_of_layer);
+            });
+
+            // 添加货架标签
+            createLabel(shelf.code, x, shelfHeight + 1, z, shelvesGroup);
+        }
+
+        // 创建仓位
+        function createPosition(position, shelfX, shelfZ, shelfWidth, shelfDepth, layerHeight, totalLayers, positionsPerLayer) {
+            const posWidth = shelfWidth / positionsPerLayer - 0.1;
+            const posDepth = shelfDepth - 0.3;
+            const posHeight = layerHeight - 0.15;
+
+            const layerIndex = position.row_no - 1;
+            const colIndex = position.column_no - 1;
+
+            const x = shelfX - shelfWidth / 2 + posWidth / 2 + colIndex * posWidth + posWidth / 2;
+            const y = layerIndex * layerHeight + layerHeight / 2;
+            const z = shelfZ;
+
+            let color;
+            switch(position.status) {
+                case 0: color = colors.unavailable; break;
+                case 1: color = colors.available; break;
+                case 2: color = colors.partial; break;
+                case 3: color = colors.full; break;
+                default: color = colors.available;
+            }
+
+            const geometry = new THREE.BoxGeometry(posWidth, posHeight, posDepth);
+            const material = new THREE.MeshStandardMaterial({ 
+                color: color,
+                transparent: true,
+                opacity: 0.8,
+                roughness: 0.5,
+                metalness: 0.3,
+                wireframe: isWireframe
+            });
+            
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(x, y, z);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            mesh.userData = {
+                type: 'position',
+                data: position,
+                originalColor: color
+            };
+            
+            positionsGroup.add(mesh);
+            objects.push(mesh);
+        }
+
+        // 创建标签
+        function createLabel(text, x, y, z, parent) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 64;
+            
+            context.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            
+            context.fillStyle = '#2c3e50';
+            context.font = 'Bold 24px Microsoft YaHei';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+            
+            const texture = new THREE.CanvasTexture(canvas);
+            const material = new THREE.SpriteMaterial({ map: texture });
+            const sprite = new THREE.Sprite(material);
+            
+            sprite.position.set(x, y, z);
+            sprite.scale.set(3, 0.75, 1);
+            
+            parent.add(sprite);
+        }
+
+        // 更新信息面板
+        function updateInfoPanel(warehouse, shelvesCount, positionsCount) {
+            document.getElementById('info-name').textContent = warehouse.name;
+            document.getElementById('info-code').textContent = warehouse.code;
+            document.getElementById('info-shelves').textContent = shelvesCount;
+            document.getElementById('info-positions').textContent = positionsCount;
+            
+            const statusBadge = document.getElementById('info-status');
+            if (warehouse.status === 1) {
+                statusBadge.textContent = '启用';
+                statusBadge.className = 'status-badge status-active';
+            } else {
+                statusBadge.textContent = '停用';
+                statusBadge.className = 'status-badge status-inactive';
+            }
+        }
+
+        // 调整相机视角
+        function adjustCamera(shelves) {
+            if (shelves.length === 0) return;
+            
+            const maxRow = Math.max(...shelves.map(s => s.row_no));
+            const maxCol = Math.max(...shelves.map(s => s.column_no));
+            
+            const distance = Math.max(maxRow, maxCol) * 5;
+            camera.position.set(distance, distance * 0.8, distance);
+            camera.lookAt(0, 5, 0);
+        }
+
+        // 窗口大小调整
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // 鼠标点击
+        function onMouseClick(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(objects);
+
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                
+                // 取消之前的选中
+                if (selectedObject && selectedObject.userData.originalColor) {
+                    selectedObject.material.color.setHex(selectedObject.userData.originalColor);
+                }
+                
+                // 选中新对象
+                selectedObject = object;
+                object.material.color.setHex(colors.selected);
+                
+                // 显示详细信息
+                showDetails(object.userData);
+            }
+        }
+
+        // 鼠标移动
+        function onMouseMove(event) {
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(objects);
+
+            const tooltip = document.getElementById('tooltip');
+            
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                const data = object.userData.data;
+                
+                if (data) {
+                    tooltip.style.display = 'block';
+                    tooltip.style.left = event.clientX + 15 + 'px';
+                    tooltip.style.top = event.clientY + 15 + 'px';
+                    
+                    let content = `<strong>${data.name || data.code}</strong><br>`;
+                    if (object.userData.type === 'position') {
+                        content += `状态: ${getPositionStatus(data.status)}<br>`;
+                        if (data.current_load !== undefined) {
+                            content += `负载: ${data.current_load}/${data.max_capacity}`;
+                        }
+                    } else if (object.userData.type === 'shelf') {
+                        content += `层数: ${data.layers}<br>`;
+                        content += `每层仓位数: ${data.positions_of_layer}`;
+                    } else if (object.userData.type === 'warehouse') {
+                        content += `类型: 仓库`;
+                    }
+                    
+                    tooltip.innerHTML = content;
+                    document.body.style.cursor = 'pointer';
+                }
+            } else {
+                tooltip.style.display = 'none';
+                document.body.style.cursor = 'default';
+            }
+        }
+
+        // 显示详细信息
+        function showDetails(userData) {
+            const data = userData.data;
+            const type = userData.type;
+            
+            let html = '<h2>详细信息</h2>';
+            
+            if (type === 'position') {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">类型</div>
+                        <div class="info-value">仓位</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">名称</div>
+                        <div class="info-value">${data.name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">编号</div>
+                        <div class="info-value">${data.code}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">区域</div>
+                        <div class="info-value">${data.area}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">货架号</div>
+                        <div class="info-value">${data.shelf_no}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">层号</div>
+                        <div class="info-value">${data.row_no}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">列号</div>
+                        <div class="info-value">${data.column_no}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">状态</div>
+                        <div class="info-value">${getPositionStatus(data.status)}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">容量</div>
+                        <div class="info-value">${data.current_load || 0}/${data.max_capacity}</div>
+                    </div>
+                `;
+            } else if (type === 'shelf') {
+                const positions = userData.positions || [];
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">类型</div>
+                        <div class="info-value">货架</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">名称</div>
+                        <div class="info-value">${data.name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">编号</div>
+                        <div class="info-value">${data.code}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">排</div>
+                        <div class="info-value">${data.row_no}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">列</div>
+                        <div class="info-value">${data.column_no}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">层数</div>
+                        <div class="info-value">${data.layers}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">每层仓位数</div>
+                        <div class="info-value">${data.positions_of_layer}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">总仓位数</div>
+                        <div class="info-value">${positions.length}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">状态</div>
+                        <div class="info-value">${data.status === 1 ? '启用' : '停用'}</div>
+                    </div>
+                `;
+            } else if (type === 'warehouse') {
+                html += `
+                    <div class="info-item">
+                        <div class="info-label">类型</div>
+                        <div class="info-value">仓库</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">名称</div>
+                        <div class="info-value">${data.name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">编号</div>
+                        <div class="info-value">${data.code}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">状态</div>
+                        <div class="info-value">${data.status === 1 ? '启用' : '停用'}</div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('info-content').innerHTML = html;
+        }
+
+        // 获取仓位状态文本
+        function getPositionStatus(status) {
+            switch(status) {
+                case 0: return '不可用';
+                case 1: return '可用';
+                case 2: return '部分占用';
+                case 3: return '已满';
+                default: return '未知';
+            }
+        }
+
+        // 切换自动旋转
+        function toggleAutoRotate() {
+            isAutoRotate = !isAutoRotate;
+            controls.autoRotate = isAutoRotate;
+            document.getElementById('btn-rotate').classList.toggle('active', isAutoRotate);
+        }
+
+        // 重置视角
+        function resetView() {
+            camera.position.set(30, 25, 30);
+            camera.lookAt(0, 5, 0);
+            controls.reset();
+        }
+
+        // 切换线框模式
+        function toggleWireframe() {
+            isWireframe = !isWireframe;
+            document.getElementById('btn-wireframe').classList.toggle('active', isWireframe);
+            
+            // 更新所有材质的线框模式
+            objects.forEach(obj => {
+                if (obj.material) {
+                    obj.material.wireframe = isWireframe;
+                }
+            });
+        }
+
+        // 导出数据
+        function exportData() {
+            const warehouseId = document.getElementById('warehouse-select').value;
+            const warehouse = mockData.warehouses.find(w => w.id === parseInt(warehouseId));
+            const shelves = mockData.shelves.filter(s => s.warehouse_id === warehouse.code);
+            const positions = mockData.positions.filter(p => p.warehouse_id === parseInt(warehouseId));
+            
+            const exportData = {
+                warehouse: warehouse,
+                shelves: shelves,
+                positions: positions,
+                exportTime: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `warehouse_${warehouse.code}_${Date.now()}.json`;
+            link.click();
+            
+            URL.revokeObjectURL(url);
+            
+            alert('数据已导出！');
+        }
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // 页面加载完成后初始化
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>

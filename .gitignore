@@ -1,0 +1,1 @@
+Nothing should be ignored in this case, as the added files are Vue component source files (.vue) and there are no build artifacts, dependencies, or temporary files in the change list.
